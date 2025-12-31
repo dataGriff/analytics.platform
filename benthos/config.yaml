@@ -1,0 +1,65 @@
+http:
+  address: 0.0.0.0:4195
+  enabled: true
+  root_path: /benthos
+  debug_endpoints: false
+
+input:
+  kafka:
+    addresses:
+      - kafka:29092
+    topics:
+      - analytics-events
+    consumer_group: benthos-analytics-consumer
+    auto_replay_nacks: true
+
+pipeline:
+  processors:
+    - mapping: |
+        root = this
+        root.timestamp = now()
+        root.event_type = this.event_type.or("unknown")
+        root.page_url = this.page_url.or("")
+        root.page_title = this.page_title.or("")
+        root.button_id = this.button_id.or("")
+        root.session_id = this.session_id.or("")
+        root.user_agent = this.user_agent.or("")
+        root.metadata = this.metadata.or({})
+
+output:
+  sql_insert:
+    driver: postgres
+    dsn: postgres://analytics:analytics123@postgres:5432/analytics?sslmode=disable
+    table: analytics_events
+    columns:
+      - timestamp
+      - event_type
+      - page_url
+      - page_title
+      - button_id
+      - session_id
+      - user_agent
+      - metadata
+    args_mapping: |
+      root = [
+        this.timestamp,
+        this.event_type,
+        this.page_url,
+        this.page_title,
+        this.button_id,
+        this.session_id,
+        this.user_agent,
+        this.metadata
+      ]
+    init_statement: ""
+    max_in_flight: 64
+
+logger:
+  level: INFO
+  format: json
+  add_timestamp: true
+
+metrics:
+  prometheus:
+    prefix: benthos
+  mapping: ""

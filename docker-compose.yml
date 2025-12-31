@@ -1,0 +1,120 @@
+version: '3.8'
+
+services:
+  # Zookeeper for Kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    hostname: zookeeper
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - analytics-network
+
+  # Kafka broker for message streaming
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    hostname: kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    networks:
+      - analytics-network
+
+  # PostgreSQL with TimescaleDB for storing analytics data
+  postgres:
+    image: timescale/timescaledb:latest-pg15
+    hostname: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: analytics
+      POSTGRES_PASSWORD: analytics123
+      POSTGRES_DB: analytics
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - analytics-network
+
+  # Benthos for streaming data from Kafka to PostgreSQL
+  benthos:
+    image: jeffail/benthos:latest
+    hostname: benthos
+    container_name: benthos
+    depends_on:
+      - kafka
+      - postgres
+    volumes:
+      - ./benthos/config.yaml:/benthos.yaml
+    command: -c /benthos.yaml
+    networks:
+      - analytics-network
+
+  # Grafana for real-time dashboards
+  grafana:
+    image: grafana/grafana:latest
+    hostname: grafana
+    container_name: grafana
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_INSTALL_PLUGINS: ""
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    networks:
+      - analytics-network
+
+  # Analytics API for receiving events from website
+  analytics-api:
+    build:
+      context: ./analytics-api
+      dockerfile: Dockerfile
+    hostname: analytics-api
+    container_name: analytics-api
+    depends_on:
+      - kafka
+    ports:
+      - "3001:3001"
+    networks:
+      - analytics-network
+
+  # Demo website for generating analytics events
+  website:
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+    hostname: website
+    container_name: website
+    ports:
+      - "8080:80"
+    networks:
+      - analytics-network
+
+networks:
+  analytics-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  grafana-data:
