@@ -17,7 +17,7 @@ pipeline:
   processors:
     - mapping: |
         root = this
-        root.timestamp = now()
+        root.timestamp = this.timestamp.or(now())
         root.event_type = this.event_type.or("unknown")
         root.page_url = this.page_url.or("")
         root.page_title = this.page_title.or("")

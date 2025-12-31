@@ -136,6 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // Track page unload
 window.addEventListener('beforeunload', function() {
     sendAnalyticsEvent('page_unload', null, {
-        time_on_page: Date.now() - performance.timing.navigationStart
+        time_on_page: Date.now() - performance.timeOrigin
     });
 });

@@ -53,7 +53,7 @@ services:
 
   # Benthos for streaming data from Kafka to PostgreSQL
   benthos:
-    image: jeffail/benthos:latest
+    image: jeffail/benthos:4.25.0
     hostname: benthos
     container_name: benthos
     depends_on:
@@ -67,7 +67,7 @@ services:
 
   # Grafana for real-time dashboards
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:10.2.3
     hostname: grafana
     container_name: grafana
     depends_on:
