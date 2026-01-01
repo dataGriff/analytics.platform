@@ -60,11 +60,11 @@ app.post('/analytics', async (req, res) => {
 
     const event = req.body;
     
-    // Validate event
-    if (!event.event_type || !event.page_url) {
+    // Validate event (channel-agnostic schema)
+    if (!event.event_type || !event.channel || !event.session_id) {
       return res.status(400).json({ 
         error: 'Bad request', 
-        message: 'Missing required fields: event_type, page_url' 
+        message: 'Missing required fields: event_type, channel, session_id' 
       });
     }
 
@@ -86,9 +86,11 @@ app.post('/analytics', async (req, res) => {
     });
 
     console.log('Event sent to Kafka:', {
+      channel: event.channel,
+      platform: event.platform,
       type: event.event_type,
-      page: event.page_url,
-      button: event.button_id
+      resource: event.resource_id,
+      target: event.interaction_target
     });
 
     res.json({ 

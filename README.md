@@ -1,15 +1,25 @@
 # Analytics Platform
 
-A complete, production-ready analytics platform that captures, processes, and visualizes behavioral data in real-time. Built with modern streaming technologies and deployable locally via Docker Compose.
+A complete, production-ready **multi-channel analytics platform** that captures, processes, and visualizes behavioral data in real-time across web, mobile, chat, voice, and AI agent channels. Built with modern streaming technologies and deployable locally via Docker Compose.
 
 ## 🚀 Features
 
+- **Multi-Channel Support**: Track interactions across web, mobile, chat, voice/speech, and AI agents
+- **Channel-Agnostic Schema**: Unified data model that works across all interaction types
 - **Real-time Event Streaming**: Capture user interactions and behavioral data
 - **Message Broker**: Apache Kafka for reliable, scalable event streaming
 - **Data Pipeline**: Bento for flexible data transformation and routing
 - **Time-Series Storage**: TimescaleDB (PostgreSQL) for efficient analytics data storage
 - **Real-time Dashboards**: Grafana for instant visualization and monitoring
 - **Demo Website**: Interactive two-page website demonstrating event tracking
+
+## 🌐 Supported Channels
+
+- **Web**: Browser-based applications (desktop, mobile, tablet)
+- **Mobile**: Native iOS and Android apps
+- **Chat**: Chatbots, messaging platforms (Slack, Teams, WhatsApp, etc.)
+- **Speech**: Voice assistants (Alexa, Google Assistant, Siri, custom)
+- **Agent**: AI agents, coding assistants, autonomous systems
 
 ## 🏗️ Architecture
 
@@ -80,20 +90,32 @@ Grafana (Visualization)
 
 ## 📊 What's Being Tracked
 
-The platform tracks the following events:
+### Web Channel (Demo)
+The demo website tracks:
+- **Navigation Events**: Page views and route changes
+- **Interaction Events**: Button clicks and form submissions
+- **Session Events**: Page load and unload
 
-- **Page Views**: When users visit a page
-- **Button Clicks**: When users click tracked buttons
-- **Navigation**: When users navigate between pages
-- **Page Unload**: When users leave a page
+### All Channels Support
+The platform's **channel-agnostic schema** supports tracking across:
+
+| Channel | Resource Type | Interaction Types | Example Events |
+|---------|--------------|-------------------|----------------|
+| **Web** | Pages/URLs | Clicks, scrolls, forms | page_view, button_click, form_submit |
+| **Mobile** | Screens | Taps, swipes, gestures | screen_view, button_tap, swipe |
+| **Chat** | Conversations | Messages, buttons | user_message, bot_response, button_click |
+| **Speech** | Skills/Intents | Utterances, commands | voice_command, intent_detected, response |
+| **Agent** | Tasks/Tools | Prompts, tool usage | task_start, tool_execution, code_generation |
 
 Each event includes:
-- Event type and timestamp
-- Page URL and title
-- Button ID (for clicks)
-- Session ID (unique per browser session)
-- User agent information
-- Custom metadata
+- **Channel & Platform**: Identifies the interaction source
+- **Event Classification**: Type and category of event
+- **Context Information**: Resource, title, interaction target (channel-specific)
+- **Session Tracking**: Session ID, user ID, device ID
+- **Technical Metadata**: User agent, client version
+- **Flexible Metadata**: JSONB field for channel-specific attributes
+
+See [CHANNEL_AGNOSTIC_SCHEMA.md](CHANNEL_AGNOSTIC_SCHEMA.md) for complete documentation.
 
 ## 🔧 Services Overview
 
@@ -163,6 +185,79 @@ analytics.platform/
     ├── page2.html
     ├── analytics.js
     └── styles.css
+```
+analytics.platform/
+├── docker-compose.yml                      # Main orchestration file
+├── README.md                               # This file
+├── CHANNEL_AGNOSTIC_SCHEMA.md             # Schema documentation
+├── analytics-api/                          # Event collection API
+│   ├── Dockerfile
+│   ├── package.json
+│   └── server.js
+├── bento/                                  # Stream processing config
+│   └── config.yaml
+├── database/                               # Database initialization
+│   └── init.sql                           # Channel-agnostic schema
+├── grafana/                                # Grafana configuration
+│   ├── dashboards/
+│   │   ├── analytics-dashboard.json       # Legacy dashboard
+│   │   └── multi-channel-analytics-dashboard.json  # New multi-channel dashboard
+│   └── provisioning/
+│       ├── dashboards/
+│       │   └── dashboards.yaml
+│       └── datasources/
+│           └── postgres.yaml
+├── website/                                # Demo website (web channel)
+│   ├── Dockerfile
+│   ├── index.html
+│   ├── page2.html
+│   ├── analytics.js                       # Web implementation
+│   └── styles.css
+└── examples/                               # Example implementations
+    ├── mobile-analytics.js                # Mobile channel example
+    ├── chat-analytics.js                  # Chat channel example
+    ├── speech-analytics.js                # Speech/voice channel example
+    └── agent-analytics.js                 # AI agent channel example
+```
+
+## 📚 Documentation
+
+- **[CHANNEL_AGNOSTIC_SCHEMA.md](CHANNEL_AGNOSTIC_SCHEMA.md)** - Complete schema documentation
+  - Field mappings for each channel
+  - Sample queries for cross-channel analytics
+  - Best practices and implementation guidelines
+  
+- **[examples/](examples/)** - Implementation examples
+  - Mobile app tracking (React Native, iOS, Android)
+  - Chat/messaging platform tracking
+  - Voice/speech assistant tracking
+  - AI agent tracking
+
+## 🔌 Implementing New Channels
+
+To implement tracking for a new channel:
+
+1. **Use the channel-agnostic event structure** (see examples/)
+2. **Set appropriate channel and platform values**
+3. **Map your context to resource_id/resource_title**
+4. **Use metadata JSONB for channel-specific attributes**
+5. **Send events to the Analytics API endpoint**
+
+Example for a custom channel:
+```javascript
+{
+  channel: 'your-channel',
+  platform: 'your-platform',
+  event_type: 'interaction',
+  event_category: 'user_action',
+  resource_id: 'context-identifier',
+  resource_title: 'Human-readable context',
+  interaction_target: 'what-was-interacted-with',
+  session_id: 'session-123',
+  user_id: 'user-456',
+  device_id: 'device-789',
+  metadata: { /* channel-specific data */ }
+}
 ```
 
 ## 🛠️ Development

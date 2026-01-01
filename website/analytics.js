@@ -10,6 +10,24 @@ function getSessionId() {
     return sessionId;
 }
 
+// Generate or retrieve device ID (stored in localStorage)
+function getDeviceId() {
+    let deviceId = localStorage.getItem('analytics-device-id');
+    if (!deviceId) {
+        deviceId = 'device-' + Date.now() + '-' + Math.random().toString(36).substring(2, 15);
+        localStorage.setItem('analytics-device-id', deviceId);
+    }
+    return deviceId;
+}
+
+// Detect platform
+function detectPlatform() {
+    const ua = navigator.userAgent;
+    if (/mobile/i.test(ua)) return 'web-mobile';
+    if (/tablet/i.test(ua)) return 'web-tablet';
+    return 'web-desktop';
+}
+
 // Get event history from localStorage
 function getEventHistory() {
     const history = localStorage.getItem('event-history');
@@ -42,22 +60,41 @@ function updateEventDisplay() {
     eventList.innerHTML = history.map(event => `
         <div class="event-item">
             <span class="event-type">${event.event_type}</span>
-            <span class="event-button">${event.button_id || 'N/A'}</span>
+            <span class="event-button">${event.interaction_target || 'N/A'}</span>
             <span class="event-time">${new Date(event.timestamp).toLocaleTimeString()}</span>
         </div>
     `).join('');
 }
 
-// Send analytics event to Kafka
-async function sendAnalyticsEvent(eventType, buttonId = null, metadata = {}) {
+// Send analytics event (channel-agnostic format)
+async function sendAnalyticsEvent(eventType, interactionTarget = null, metadata = {}, eventCategory = 'user_action') {
     const event = {
+        // Channel information
+        channel: 'web',
+        platform: detectPlatform(),
+        
+        // Event classification
         event_type: eventType,
-        page_url: window.location.href,
-        page_title: document.title,
-        button_id: buttonId,
+        event_category: eventCategory,
+        
+        // Context information
+        resource_id: window.location.href,
+        resource_title: document.title,
+        interaction_target: interactionTarget,
+        
+        // Session and user tracking
         session_id: getSessionId(),
+        device_id: getDeviceId(),
+        user_id: null, // Can be set if user is authenticated
+        
+        // Technical metadata
         user_agent: navigator.userAgent,
+        client_version: '1.0.0',
+        
+        // Timestamp
         timestamp: new Date().toISOString(),
+        
+        // Additional context
         metadata: metadata
     };
 
@@ -87,18 +124,21 @@ async function sendAnalyticsEvent(eventType, buttonId = null, metadata = {}) {
 
 // Track page view
 function trackPageView() {
-    sendAnalyticsEvent('page_view', null, {
+    sendAnalyticsEvent('navigation', null, {
         referrer: document.referrer,
         screen_width: window.screen.width,
-        screen_height: window.screen.height
-    });
+        screen_height: window.screen.height,
+        viewport_width: window.innerWidth,
+        viewport_height: window.innerHeight
+    }, 'navigation');
 }
 
 // Track button click
 function trackButtonClick(buttonId) {
-    sendAnalyticsEvent('button_click', buttonId, {
-        page_section: 'main'
-    });
+    sendAnalyticsEvent('interaction', buttonId, {
+        page_section: 'main',
+        interaction_type: 'click'
+    }, 'user_action');
 }
 
 // Initialize analytics
@@ -125,17 +165,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Track navigation clicks
     document.querySelectorAll('nav a').forEach(link => {
         link.addEventListener('click', function(e) {
-            sendAnalyticsEvent('navigation_click', null, {
+            sendAnalyticsEvent('navigation', this.textContent, {
                 destination: this.href,
                 link_text: this.textContent
-            });
+            }, 'navigation');
         });
     });
 });
 
 // Track page unload
 window.addEventListener('beforeunload', function() {
-    sendAnalyticsEvent('page_unload', null, {
-        time_on_page: Date.now() - performance.timeOrigin
-    });
+    sendAnalyticsEvent('session', null, {
+        time_on_page: Date.now() - performance.timeOrigin,
+        action: 'page_unload'
+    }, 'system_event');
 });
