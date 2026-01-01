@@ -5,7 +5,7 @@ CREATE EXTENSION IF NOT EXISTS timescaledb;
 
 -- Create analytics events table
 CREATE TABLE IF NOT EXISTS analytics_events (
-    id SERIAL PRIMARY KEY,
+    id SERIAL,
     timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     event_type VARCHAR(100) NOT NULL,
     page_url VARCHAR(500) NOT NULL,
@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS analytics_events (
     session_id VARCHAR(100),
     user_agent TEXT,
     metadata JSONB,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (id, timestamp)
 );
 
 -- Convert to TimescaleDB hypertable for better time-series performance
