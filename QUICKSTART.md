@@ -56,8 +56,11 @@ Expected output - all services should show "Up":
 NAME                    STATUS
 analytics-api          Up
 bento                Up
+delta-writer           Up
 grafana                Up
 kafka                  Up
+minio                  Up
+minio-init             Up (exited - one-time init)
 postgres               Up
 website                Up
 zookeeper              Up
@@ -91,6 +94,13 @@ You should see:
 - ✅ Total Events gauge
 - ✅ Events by Type pie chart
 - ✅ Recent Events table
+
+#### E. (Optional) Check Delta Lake Storage
+Open your browser to: **http://localhost:9001**
+- Username: `minioadmin`
+- Password: `minioadmin`
+- Navigate to: `analytics` bucket → `delta` → `analytics-events`
+- View Delta Lake Parquet files
 
 ### 5. Watch Data Flow
 

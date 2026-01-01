@@ -273,11 +273,23 @@ analytics.platform/
   - Field mappings for each channel
   - Sample queries for cross-channel analytics
   - Best practices and implementation guidelines
+
+- **[DELTA_LAKE_INTEGRATION.md](DELTA_LAKE_INTEGRATION.md)** - Delta Lake integration guide
+  - Architecture and design decisions
+  - Spark-free implementation details
+  - Usage examples and queries
+  - Performance and security considerations
+  
+- **[delta-writer/README.md](delta-writer/README.md)** - Delta writer service documentation
+  - Configuration options
+  - Batch processing details
+  - Monitoring and troubleshooting
   
 - **[examples/](examples/)** - Implementation examples
   - Mobile app tracking (React Native, iOS, Android)
   - Chat/messaging platform tracking
   - Voice/speech assistant tracking
+  - AI agent tracking
   - AI agent tracking
 
 ## 🔌 Implementing New Channels
