@@ -3,7 +3,7 @@
 ## System Architecture
 
 ### Overview
-This analytics platform is a complete event-driven data pipeline that captures user behavioral data in real-time, processes it through a message broker, stores it in a time-series database, and visualizes it through interactive dashboards.
+This analytics platform is a complete event-driven data pipeline that captures user behavioral data in real-time, processes it through a message broker, and stores it in dual storage systems: a time-series database for real-time analytics and Delta Lake for data lake capabilities. The platform visualizes data through interactive dashboards.
 
 ### Component Diagram
 
@@ -29,25 +29,34 @@ This analytics platform is a complete event-driven data pipeline that captures u
 │  - Topic:       │
 │    analytics-   │
 │    events       │
-└────────┬────────┘
-         │ Consumer
-         ▼
-┌─────────────────┐
-│    Bento      │
-│  - Stream       │
-│    Processing   │
-│  - Transform    │
-└────────┬────────┘
-         │ SQL Insert
-         ▼
-┌─────────────────┐
-│  PostgreSQL/    │  (Port 5432)
-│  TimescaleDB    │
-│  - analytics    │
-│    _events      │
-└────────┬────────┘
-         │ Query
-         ▼
+└────┬────────┬───┘
+     │        │
+     │        │ (Parallel Consumers)
+     │        │
+     ▼        ▼
+┌──────┐  ┌──────────────┐
+│Bento │  │ Delta Writer │
+│      │  │  - Python    │
+│      │  │  - delta-rs  │
+└──┬───┘  └───────┬──────┘
+   │              │
+   │ SQL Insert   │ Delta Write
+   ▼              ▼
+┌──────────┐  ┌──────────┐
+│PostgreSQL│  │  MinIO   │  (Ports 9000, 9001)
+│TimescaleDB  │  S3 API  │
+│  (5432)  │  │          │
+└────┬─────┘  └────┬─────┘
+     │             │
+     │             ▼
+     │        ┌──────────────┐
+     │        │  Delta Lake  │
+     │        │  - ACID      │
+     │        │  - Parquet   │
+     │        │  - Versioning│
+     │        └──────────────┘
+     │ Query
+     ▼
 ┌─────────────────┐
 │    Grafana      │  (Port 3000)
 │  - Real-time    │
@@ -55,6 +64,24 @@ This analytics platform is a complete event-driven data pipeline that captures u
 │  - Analytics    │
 └─────────────────┘
 ```
+
+### Dual Storage Architecture
+
+The platform implements a **dual-storage strategy** for optimal performance:
+
+1. **Hot Storage (PostgreSQL/TimescaleDB)**
+   - Real-time analytics and dashboards
+   - Optimized for time-series queries
+   - Fast access for recent data
+   - Powers Grafana visualizations
+
+2. **Data Lake (Delta Lake on MinIO)**
+   - Long-term storage and historical analytics
+   - ACID transactions without Spark
+   - Schema evolution support
+   - Time travel capabilities
+   - Parquet format for efficient storage
+   - S3-compatible object storage
 
 ## Data Flow
 
@@ -80,17 +107,40 @@ This analytics platform is a complete event-driven data pipeline that captures u
 - Message value: JSON serialized event
 - Kafka ensures durability and ordered delivery
 
-### 4. Stream Processing
+### 4. Stream Processing (Parallel)
+
+The platform uses **parallel stream processing** with two independent consumers:
+
+#### 4a. PostgreSQL Path (Bento)
 - Bento consumes from Kafka topic
 - Transforms and validates data using mapping processor
 - Ensures all required fields are present with defaults
 - Converts JSON to SQL-ready format
+- Inserts into PostgreSQL/TimescaleDB
 
-### 5. Data Storage
+#### 4b. Delta Lake Path (Delta Writer)
+- Python service consumes from Kafka topic in separate consumer group
+- Batches events for efficient writes
+- Uses deltalake (delta-rs) library - no Spark required
+- Writes to MinIO in Delta Lake format
+- Provides ACID guarantees and versioning
+
+### 5. Data Storage (Dual Storage)
+
+#### 5a. PostgreSQL/TimescaleDB Storage
 - Bento inserts data into PostgreSQL using `sql_insert` output
 - TimescaleDB hypertable optimizes for time-series queries
-- Indexes on event_type, page_url, session_id, and timestamp
+- Indexes on event_type, channel, session_id, and timestamp
 - Materialized view for aggregated analytics
+- Powers real-time Grafana dashboards
+
+#### 5b. Delta Lake Storage
+- Delta Writer writes batches to MinIO in Delta Lake format
+- Stored as Parquet files with Delta transaction log
+- ACID transactions ensure consistency
+- Schema evolution handled automatically
+- Supports time travel and versioning
+- Optimized for analytical queries and long-term storage
 
 ### 6. Visualization
 - Grafana connects to PostgreSQL datasource
