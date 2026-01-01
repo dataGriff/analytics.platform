@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Demo - Page 2</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Analytics Platform Demo</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="page2.html" class="active">Page 2</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero">
+                <h2>Welcome to Page 2</h2>
+                <p>This is the second page of our demo. Try the buttons here to generate different analytics events.</p>
+            </section>
+
+            <section class="buttons">
+                <button id="btn-feature-1" class="btn btn-info">Feature 1</button>
+                <button id="btn-feature-2" class="btn btn-warning">Feature 2</button>
+                <button id="btn-feature-3" class="btn btn-danger">Feature 3</button>
+            </section>
+
+            <section class="info">
+                <div class="info-card">
+                    <h3>🔄 Real-Time Processing</h3>
+                    <p>Events flow through: Website → Kafka → Bento → PostgreSQL → Grafana</p>
+                </div>
+                <div class="info-card">
+                    <h3>⚡ Quick Start</h3>
+                    <p>Run <code>docker-compose up</code> to start the entire platform locally.</p>
+                </div>
+            </section>
+
+            <section class="event-log">
+                <h3>Event Log (Last 5)</h3>
+                <div id="event-list"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Analytics Platform Demo &copy; 2024</p>
+        </footer>
+    </div>
+
+    <script src="analytics.js"></script>
+</body>
+</html>

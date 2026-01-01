@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App - Analytics Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="chat-header">
+            <div class="header-content">
+                <h1>💬 Chat Analytics Demo</h1>
+                <div class="user-info">
+                    <span id="user-name">User</span>
+                    <span class="status-indicator online"></span>
+                </div>
+            </div>
+        </header>
+
+        <div class="chat-container">
+            <!-- Sidebar with conversations -->
+            <aside class="conversations-sidebar">
+                <div class="sidebar-header">
+                    <h2>Conversations</h2>
+                    <button id="new-conversation-btn" class="btn btn-new">+ New</button>
+                </div>
+                <div id="conversations-list" class="conversations-list">
+                    <!-- Conversations will be added here dynamically -->
+                </div>
+            </aside>
+
+            <!-- Main chat area -->
+            <main class="chat-main">
+                <div class="chat-welcome" id="chat-welcome">
+                    <div class="welcome-content">
+                        <h2>👋 Welcome to Chat Analytics Demo</h2>
+                        <p>Select a conversation from the sidebar or start a new one to begin chatting.</p>
+                        <p class="info-text">All your interactions are tracked and sent to the analytics platform.</p>
+                    </div>
+                </div>
+
+                <div class="chat-active" id="chat-active" style="display: none;">
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Messages will be added here dynamically -->
+                    </div>
+
+                    <div class="quick-actions" id="quick-actions">
+                        <h4>Quick Actions</h4>
+                        <div class="quick-buttons">
+                            <button class="quick-btn" data-action="help">❓ Help</button>
+                            <button class="quick-btn" data-action="status">📊 Status</button>
+                            <button class="quick-btn" data-action="feedback">💭 Feedback</button>
+                            <button class="quick-btn" data-action="support">🛟 Support</button>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-container">
+                        <div class="typing-indicator" id="typing-indicator" style="display: none;">
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                            <span class="typing-text">Bot is typing...</span>
+                        </div>
+                        <div class="chat-input-wrapper">
+                            <input 
+                                type="text" 
+                                id="chat-input" 
+                                class="chat-input" 
+                                placeholder="Type your message..."
+                                autocomplete="off"
+                            />
+                            <button id="send-btn" class="btn btn-send">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Analytics info panel -->
+            <aside class="analytics-panel">
+                <div class="panel-header">
+                    <h3>📊 Analytics</h3>
+                </div>
+                <div class="panel-content">
+                    <div class="stat-card">
+                        <div class="stat-label">Messages Sent</div>
+                        <div class="stat-value" id="stat-messages">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Active Conversation</div>
+                        <div class="stat-value" id="stat-conversation">None</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Session Duration</div>
+                        <div class="stat-value" id="stat-duration">0m</div>
+                    </div>
+                    
+                    <div class="recent-events">
+                        <h4>Recent Events</h4>
+                        <div id="event-list" class="event-list"></div>
+                    </div>
+
+                    <div class="analytics-links">
+                        <a href="http://localhost:3000" target="_blank" class="analytics-link">
+                            📈 View Dashboard
+                        </a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="analytics.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

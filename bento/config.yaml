@@ -1,0 +1,101 @@
+http:
+  address: 0.0.0.0:4195
+  enabled: true
+  root_path: /bento
+  debug_endpoints: false
+
+input:
+  kafka:
+    addresses:
+      - kafka:29092
+    topics:
+      - analytics-events
+    consumer_group: bento-analytics-consumer
+
+pipeline:
+  processors:
+    - mapping: |
+        root = this
+        root.timestamp = this.timestamp.or(now())
+        
+        # Channel information
+        root.channel = this.channel.or("unknown")
+        root.platform = this.platform.or("")
+        
+        # Event classification
+        root.event_type = this.event_type.or("unknown")
+        root.event_category = this.event_category.or("")
+        
+        # Context information
+        root.resource_id = this.resource_id.or("")
+        root.resource_title = this.resource_title.or("")
+        root.interaction_target = this.interaction_target.or("")
+        
+        # Session and user tracking
+        root.session_id = this.session_id.or("")
+        root.user_id = this.user_id.or("")
+        root.device_id = this.device_id.or("")
+        
+        # Technical metadata
+        root.user_agent = this.user_agent.or("")
+        root.client_version = this.client_version.or("")
+        
+        # Interaction-specific data
+        root.interaction_value = this.interaction_value.or(null)
+        root.interaction_text = this.interaction_text.or("")
+        
+        # Additional context
+        root.metadata = this.metadata.or({})
+
+output:
+  sql_insert:
+    driver: postgres
+    dsn: postgres://analytics:analytics123@postgres:5432/analytics?sslmode=disable
+    table: analytics_events
+    columns:
+      - timestamp
+      - channel
+      - platform
+      - event_type
+      - event_category
+      - resource_id
+      - resource_title
+      - interaction_target
+      - session_id
+      - user_id
+      - device_id
+      - user_agent
+      - client_version
+      - interaction_value
+      - interaction_text
+      - metadata
+    args_mapping: |
+      root = [
+        this.timestamp,
+        this.channel,
+        this.platform,
+        this.event_type,
+        this.event_category,
+        this.resource_id,
+        this.resource_title,
+        this.interaction_target,
+        this.session_id,
+        this.user_id,
+        this.device_id,
+        this.user_agent,
+        this.client_version,
+        this.interaction_value,
+        this.interaction_text,
+        this.metadata.string()
+      ]
+    init_statement: ""
+    max_in_flight: 64
+
+logger:
+  level: INFO
+  format: json
+  add_timestamp: true
+
+metrics:
+  prometheus: {}
+  mapping: ""

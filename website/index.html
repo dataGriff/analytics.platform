@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Demo - Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Analytics Platform Demo</h1>
+            <nav>
+                <a href="index.html" class="active">Home</a>
+                <a href="page2.html">Page 2</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero">
+                <h2>Welcome to Page 1</h2>
+                <p>This is a demo website to showcase the analytics platform. Click the buttons below to generate analytics events.</p>
+            </section>
+
+            <section class="buttons">
+                <button id="btn-action-1" class="btn btn-primary">Primary Action</button>
+                <button id="btn-action-2" class="btn btn-secondary">Secondary Action</button>
+                <button id="btn-action-3" class="btn btn-success">Success Action</button>
+            </section>
+
+            <section class="info">
+                <div class="info-card">
+                    <h3>🎯 How It Works</h3>
+                    <p>When you click any button, an analytics event is sent to Kafka, processed by Bento, stored in PostgreSQL, and visualized in Grafana.</p>
+                </div>
+                <div class="info-card">
+                    <h3>📊 View Dashboard</h3>
+                    <p>Check the real-time analytics dashboard at <a href="http://localhost:3000" target="_blank">Grafana</a> (admin/admin)</p>
+                </div>
+            </section>
+
+            <section class="event-log">
+                <h3>Event Log (Last 5)</h3>
+                <div id="event-list"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Analytics Platform Demo &copy; 2024</p>
+        </footer>
+    </div>
+
+    <script src="analytics.js"></script>
+</body>
+</html>
