@@ -30,7 +30,7 @@ def test_event_parsing():
         try:
             dt = datetime.fromisoformat(event['timestamp'].replace('Z', '+00:00'))
             event['timestamp'] = dt.isoformat()
-        except:
+        except (ValueError, AttributeError):
             event['timestamp'] = datetime.utcnow().isoformat()
     else:
         event['timestamp'] = datetime.utcnow().isoformat()

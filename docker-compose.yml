@@ -1,3 +1,6 @@
+# Note: version field is optional in Docker Compose v2+, but kept for compatibility
+version: '3.8'
+
 services:
   # Zookeeper for Kafka
   zookeeper:

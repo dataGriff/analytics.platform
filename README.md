@@ -352,7 +352,8 @@ SELECT event_type, COUNT(*) FROM analytics_events GROUP BY event_type;
 
 **This is a demo setup. For production:**
 
-- Change default passwords
+### General Security
+- Change default passwords (PostgreSQL: analytics/analytics123, MinIO: minioadmin/minioadmin, Grafana: admin/admin)
 - Enable SSL/TLS for all services
 - Add authentication to Analytics API
 - Implement rate limiting
@@ -361,13 +362,22 @@ SELECT event_type, COUNT(*) FROM analytics_events GROUP BY event_type;
 - Restrict network access
 - Add monitoring and alerting
 
+### MinIO Security
+- Configure proper IAM policies instead of anonymous access
+- Use strong credentials (not minioadmin/minioadmin)
+- Enable TLS/SSL encryption
+- Restrict bucket access to authorized services only
+- Enable audit logging
+- Configure bucket policies and access control lists
+
 ## 🚢 Production Considerations
 
 1. **Scaling**:
    - Add more Kafka brokers
-   - Scale Bento horizontally
+   - Scale Bento and Delta Writer horizontally
    - Use PostgreSQL replication
    - Add load balancer for Analytics API
+   - Scale MinIO with distributed mode
 
 2. **Monitoring**:
    - Add Prometheus for metrics

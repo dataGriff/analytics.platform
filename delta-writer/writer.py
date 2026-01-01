@@ -75,7 +75,7 @@ def parse_event(message):
                 # Try parsing the timestamp
                 dt = datetime.fromisoformat(event['timestamp'].replace('Z', '+00:00'))
                 event['timestamp'] = dt.isoformat()
-            except:
+            except (ValueError, AttributeError) as e:
                 event['timestamp'] = datetime.utcnow().isoformat()
         else:
             event['timestamp'] = datetime.utcnow().isoformat()
