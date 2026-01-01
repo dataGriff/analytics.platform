@@ -51,17 +51,17 @@ services:
     networks:
       - analytics-network
 
-  # Benthos for streaming data from Kafka to PostgreSQL
-  benthos:
-    image: jeffail/benthos:4.25.0
-    hostname: benthos
-    container_name: benthos
+  # Bento for streaming data from Kafka to PostgreSQL
+  bento:
+    image: ghcr.io/warpstreamlabs/bento:latest
+    hostname: bento
+    container_name: bento
     depends_on:
       - kafka
       - postgres
     volumes:
-      - ./benthos/config.yaml:/benthos.yaml
-    command: -c /benthos.yaml
+      - ./bento/config.yaml:/bento.yaml
+    command: -c /bento.yaml
     networks:
       - analytics-network
 

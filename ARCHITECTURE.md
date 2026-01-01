@@ -33,7 +33,7 @@ This analytics platform is a complete event-driven data pipeline that captures u
          │ Consumer
          ▼
 ┌─────────────────┐
-│    Benthos      │
+│    Bento      │
 │  - Stream       │
 │    Processing   │
 │  - Transform    │
@@ -81,13 +81,13 @@ This analytics platform is a complete event-driven data pipeline that captures u
 - Kafka ensures durability and ordered delivery
 
 ### 4. Stream Processing
-- Benthos consumes from Kafka topic
+- Bento consumes from Kafka topic
 - Transforms and validates data using mapping processor
 - Ensures all required fields are present with defaults
 - Converts JSON to SQL-ready format
 
 ### 5. Data Storage
-- Benthos inserts data into PostgreSQL using `sql_insert` output
+- Bento inserts data into PostgreSQL using `sql_insert` output
 - TimescaleDB hypertable optimizes for time-series queries
 - Indexes on event_type, page_url, session_id, and timestamp
 - Materialized view for aggregated analytics
@@ -323,7 +323,7 @@ docker compose logs -f
 
 # View specific service logs
 docker compose logs -f analytics-api
-docker compose logs -f benthos
+docker compose logs -f bento
 docker compose logs -f kafka
 docker compose logs -f postgres
 docker compose logs -f grafana
@@ -332,7 +332,7 @@ docker compose logs -f grafana
 ### Metrics
 
 - **Analytics API**: Logs to stdout, shows event processing
-- **Benthos**: Prometheus metrics at http://localhost:4195/metrics (if enabled)
+- **Bento**: Prometheus metrics at http://localhost:4195/metrics (if enabled)
 - **Kafka**: JMX metrics (requires configuration)
 - **PostgreSQL**: Query performance via pg_stat_statements
 
@@ -342,7 +342,7 @@ docker compose logs -f grafana
 # Analytics API
 curl http://localhost:3001/health
 
-# Benthos (if HTTP enabled)
+# Bento (if HTTP enabled)
 # curl http://localhost:4195/ready
 
 # Kafka (check broker status)
@@ -369,10 +369,10 @@ curl http://localhost:3000/api/health
    - Increase topic partitions for parallelism
    - Configure replication factor for durability
 
-3. **Benthos**
+3. **Bento**
    - Scale to multiple consumers
    - Each consumes from different partitions
-   - `docker compose up -d --scale benthos=3`
+   - `docker compose up -d --scale bento=3`
 
 4. **PostgreSQL**
    - Configure replication (primary-replica)
@@ -392,7 +392,7 @@ curl http://localhost:3000/api/health
 
 1. Check Analytics API is running: `docker compose ps analytics-api`
 2. Verify Kafka is healthy: `docker compose logs kafka | grep started`
-3. Check Benthos is consuming: `docker compose logs benthos`
+3. Check Bento is consuming: `docker compose logs bento`
 4. Verify database connectivity: `docker exec postgres psql -U analytics -d analytics -c "SELECT COUNT(*) FROM analytics_events;"`
 5. Refresh Grafana dashboard manually
 

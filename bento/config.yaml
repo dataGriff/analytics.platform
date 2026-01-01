@@ -1,7 +1,7 @@
 http:
   address: 0.0.0.0:4195
   enabled: true
-  root_path: /benthos
+  root_path: /bento
   debug_endpoints: false
 
 input:
@@ -10,7 +10,7 @@ input:
       - kafka:29092
     topics:
       - analytics-events
-    consumer_group: benthos-analytics-consumer
+    consumer_group: bento-analytics-consumer
 
 pipeline:
   processors:

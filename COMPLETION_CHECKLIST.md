@@ -39,17 +39,17 @@ All requirements from the problem statement have been successfully implemented a
 
 ---
 
-### ✅ 3. Simple Data Capture with Benthos
+### ✅ 3. Simple Data Capture with Bento
 **Status: COMPLETE**
 
-- [x] Benthos stream processor configured
+- [x] Bento stream processor configured
 - [x] Consumes from Kafka topic
 - [x] Transforms and validates data
 - [x] Inserts into PostgreSQL
 - [x] Easy to configure via YAML
 
 **Implementation:**
-- `benthos/config.yaml` - Complete pipeline
+- `bento/config.yaml` - Complete pipeline
 - Kafka consumer → Transform → SQL insert
 - Automatic retries and error handling
 
@@ -148,7 +148,7 @@ All requirements from the problem statement have been successfully implemented a
 
 **Implementation:**
 - `docker-compose.yml` - Multi-service setup
-- Services: Zookeeper, Kafka, PostgreSQL, Benthos, Grafana, API, Website
+- Services: Zookeeper, Kafka, PostgreSQL, Bento, Grafana, API, Website
 - Networking configured
 - Volume management
 - Health checks
@@ -160,7 +160,7 @@ All requirements from the problem statement have been successfully implemented a
 ### Code & Configuration
 - [x] Docker Compose orchestration
 - [x] Analytics API (Node.js/Express)
-- [x] Benthos stream processor config
+- [x] Bento stream processor config
 - [x] Database schema and indexes
 - [x] Grafana dashboard and datasources
 - [x] Demo website (2 pages, 6 buttons)
@@ -196,7 +196,7 @@ Code: 650+ lines
 Configuration: 50+ lines
 
 Services: 7
-Technologies: 8 (Docker, Kafka, Benthos, PostgreSQL, TimescaleDB, 
+Technologies: 8 (Docker, Kafka, Bento, PostgreSQL, TimescaleDB, 
               Grafana, Node.js, Nginx)
 Event Types: 4
 Grafana Panels: 4
@@ -212,7 +212,7 @@ Grafana Panels: 4
 - [x] Buttons generate events
 - [x] Events reach Analytics API
 - [x] Events appear in Kafka
-- [x] Benthos processes events
+- [x] Bento processes events
 - [x] Data stored in PostgreSQL
 - [x] Grafana displays real-time data
 
@@ -277,7 +277,7 @@ docker exec -it kafka kafka-console-consumer \
 | Behavioral data capture | Yes | Yes | ✅ |
 | Easy integration | Yes | HTTP POST | ✅ |
 | Broker integration | Yes | Kafka | ✅ |
-| Simple data capture | Yes | Benthos | ✅ |
+| Simple data capture | Yes | Bento | ✅ |
 | Streaming pipeline | Yes | Complete | ✅ |
 | Real-time reporting | Yes | Grafana | ✅ |
 | Historical reporting | Yes | PostgreSQL | ✅ |

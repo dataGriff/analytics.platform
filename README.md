@@ -6,7 +6,7 @@ A complete, production-ready analytics platform that captures, processes, and vi
 
 - **Real-time Event Streaming**: Capture user interactions and behavioral data
 - **Message Broker**: Apache Kafka for reliable, scalable event streaming
-- **Data Pipeline**: Benthos for flexible data transformation and routing
+- **Data Pipeline**: Bento for flexible data transformation and routing
 - **Time-Series Storage**: TimescaleDB (PostgreSQL) for efficient analytics data storage
 - **Real-time Dashboards**: Grafana for instant visualization and monitoring
 - **Demo Website**: Interactive two-page website demonstrating event tracking
@@ -20,7 +20,7 @@ Analytics API (Node.js + Express)
     ↓ Kafka Producer
 Apache Kafka (Message Broker)
     ↓ Consumer
-Benthos (Stream Processor)
+Bento (Stream Processor)
     ↓ SQL Insert
 PostgreSQL/TimescaleDB (Data Store)
     ↓ Query
@@ -51,7 +51,7 @@ Grafana (Visualization)
    - Zookeeper (Kafka dependency)
    - Kafka (Message broker)
    - PostgreSQL with TimescaleDB (Database)
-   - Benthos (Stream processor)
+   - Bento (Stream processor)
    - Grafana (Dashboards)
    - Analytics API (Event receiver)
    - Demo Website (Event generator)
@@ -111,11 +111,11 @@ Each event includes:
 - Handles high-throughput event ingestion
 - Provides durability and replay capabilities
 
-### Benthos
+### Bento
 - Consumes events from Kafka
 - Transforms and enriches data
 - Writes to PostgreSQL in real-time
-- Configurable via `benthos/config.yaml`
+- Configurable via `bento/config.yaml`
 
 ### PostgreSQL/TimescaleDB (Port 5432)
 - Time-series optimized database
@@ -145,7 +145,7 @@ analytics.platform/
 │   ├── Dockerfile
 │   ├── package.json
 │   └── server.js
-├── benthos/                    # Stream processing config
+├── bento/                    # Stream processing config
 │   └── config.yaml
 ├── database/                   # Database initialization
 │   └── init.sql
@@ -174,7 +174,7 @@ docker-compose logs -f
 
 # Specific service
 docker-compose logs -f analytics-api
-docker-compose logs -f benthos
+docker-compose logs -f bento
 docker-compose logs -f kafka
 ```
 
@@ -223,7 +223,7 @@ SELECT event_type, COUNT(*) FROM analytics_events GROUP BY event_type;
 
 1. **Scaling**:
    - Add more Kafka brokers
-   - Scale Benthos horizontally
+   - Scale Bento horizontally
    - Use PostgreSQL replication
    - Add load balancer for Analytics API
 
@@ -255,7 +255,7 @@ SELECT event_type, COUNT(*) FROM analytics_events GROUP BY event_type;
 - Wait 1-2 minutes for data to flow through pipeline
 - Check Analytics API is running: `curl http://localhost:3001/health`
 - Verify Kafka topics: `docker exec -it kafka kafka-topics --list --bootstrap-server localhost:9092`
-- Check Benthos logs: `docker-compose logs benthos`
+- Check Bento logs: `docker-compose logs bento`
 
 ### Database connection issues
 - Ensure PostgreSQL is fully started

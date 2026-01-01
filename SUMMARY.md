@@ -12,7 +12,7 @@ A fully functional, production-ready analytics platform has been successfully im
 Complete multi-service orchestration with 7 services:
 - ✅ Apache Kafka + Zookeeper (message broker)
 - ✅ PostgreSQL with TimescaleDB (time-series database)
-- ✅ Benthos (stream processor)
+- ✅ Bento (stream processor)
 - ✅ Grafana (visualization)
 - ✅ Analytics API (Node.js event receiver)
 - ✅ Demo Website (2-page interactive site)
@@ -31,8 +31,8 @@ Node.js/Express service with:
 - `package.json` - Dependencies (express, kafkajs, cors)
 - `server.js` - Main application logic
 
-### 3. **Stream Processing** (benthos/)
-Benthos configuration for:
+### 3. **Stream Processing** (bento/)
+Bento configuration for:
 - ✅ Kafka consumer setup
 - ✅ Data transformation pipeline
 - ✅ PostgreSQL output with SQL inserts
@@ -41,7 +41,7 @@ Benthos configuration for:
 - ✅ JSON to SQL mapping
 
 **Files:**
-- `config.yaml` - Complete Benthos pipeline configuration
+- `config.yaml` - Complete Bento pipeline configuration
 
 ### 4. **Database** (database/)
 PostgreSQL with TimescaleDB setup:
@@ -113,9 +113,9 @@ Kafka Producer sends to topic 'analytics-events'
     ↓
 Kafka stores message durably
     ↓
-Benthos consumes from Kafka
+Bento consumes from Kafka
     ↓
-benthos/config.yaml transforms data
+bento/config.yaml transforms data
     ↓
 SQL INSERT to PostgreSQL
     ↓
@@ -180,13 +180,13 @@ open http://localhost:3000
 ### Real-Time Processing
 - ⚡ Events flow from website to dashboard in ~1 second
 - ⚡ Kafka ensures no data loss
-- ⚡ Benthos provides reliable transformation
+- ⚡ Bento provides reliable transformation
 - ⚡ Grafana auto-refreshes every 5 seconds
 
 ### Scalability
 - 📈 Kafka can handle millions of events/second
 - 📈 TimescaleDB optimized for time-series data
-- 📈 Benthos can be horizontally scaled
+- 📈 Bento can be horizontally scaled
 - 📈 Analytics API is stateless and scalable
 
 ### Production Ready
@@ -212,8 +212,8 @@ open http://localhost:3000
 | Behavioral data capture | ✅ | website/analytics.js |
 | Easy integration | ✅ | Simple HTTP POST API |
 | Push to broker | ✅ | Kafka via Analytics API |
-| Simple capture to data store | ✅ | Benthos configuration |
-| Streaming & capturing | ✅ | Kafka → Benthos → PostgreSQL |
+| Simple capture to data store | ✅ | Bento configuration |
+| Streaming & capturing | ✅ | Kafka → Bento → PostgreSQL |
 | Basic real-time reporting | ✅ | Grafana dashboard |
 | Reporting on captured data | ✅ | PostgreSQL queries in Grafana |
 | Demo website with 2 pages | ✅ | index.html + page2.html |
@@ -286,7 +286,7 @@ docker exec -it postgres psql -U analytics -d analytics -c \
 ✅ All behavioral data is captured  
 ✅ Platform integrates easily via HTTP API  
 ✅ Data pushed to Kafka broker  
-✅ Benthos provides simple data capture  
+✅ Bento provides simple data capture  
 ✅ Streaming and capturing is simple  
 ✅ Basic real-time reporting available in Grafana  
 ✅ Reporting on captured data works  

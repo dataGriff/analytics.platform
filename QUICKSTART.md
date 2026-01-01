@@ -55,7 +55,7 @@ Expected output - all services should show "Up":
 ```
 NAME                    STATUS
 analytics-api          Up
-benthos                Up
+bento                Up
 grafana                Up
 kafka                  Up
 postgres               Up
@@ -100,8 +100,8 @@ Open multiple terminal windows to watch the data flow through the system:
 # Terminal 1: Watch Analytics API logs
 docker compose logs -f analytics-api
 
-# Terminal 2: Watch Benthos processing
-docker compose logs -f benthos
+# Terminal 2: Watch Bento processing
+docker compose logs -f bento
 
 # Terminal 3: Watch database inserts
 docker exec -it postgres psql -U analytics -d analytics -c \
@@ -220,8 +220,8 @@ docker compose logs kafka
 # 1. Check Analytics API is receiving events
 curl http://localhost:3001/health
 
-# 2. Check Benthos is running
-docker compose logs benthos | grep -i error
+# 2. Check Bento is running
+docker compose logs bento | grep -i error
 
 # 3. Check database has data
 docker exec -it postgres psql -U analytics -d analytics -c \
@@ -251,7 +251,7 @@ docker exec -it postgres psql -U analytics -d analytics -c \
 1. **Customize the website** - Edit files in `website/` directory
 2. **Add more dashboards** - Create new Grafana dashboards
 3. **Extend the API** - Add endpoints in `analytics-api/server.js`
-4. **Transform data** - Modify `benthos/config.yaml`
+4. **Transform data** - Modify `bento/config.yaml`
 5. **Add more metrics** - Create database views and queries
 
 ## Need Help?
