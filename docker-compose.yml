@@ -111,6 +111,18 @@ services:
     networks:
       - analytics-network
 
+  # Chat app for demonstrating chat analytics
+  chat-app:
+    build:
+      context: ./chat-app
+      dockerfile: Dockerfile
+    hostname: chat-app
+    container_name: chat-app
+    ports:
+      - "8082:80"
+    networks:
+      - analytics-network
+
 networks:
   analytics-network:
     driver: bridge
