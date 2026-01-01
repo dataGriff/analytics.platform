@@ -48,7 +48,7 @@ output:
         this.button_id,
         this.session_id,
         this.user_agent,
-        this.metadata
+        this.metadata.string()
       ]
     init_statement: ""
     max_in_flight: 64
