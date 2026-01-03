@@ -18,7 +18,7 @@ const POSTGRES_CONFIG = {
 };
 
 // Configurable wait time (can be overridden via environment variable)
-const PROCESSING_WAIT_TIME = parseInt(process.env.TEST_WAIT_TIME || '10000', 10);
+const PROCESSING_WAIT_TIME = Number(process.env.TEST_WAIT_TIME || '10000');
 
 // Test event data (example web event)
 const TEST_EVENT = {
@@ -29,7 +29,7 @@ const TEST_EVENT = {
   resource_id: 'http://localhost:8080/test-page',
   resource_title: 'Test Page',
   interaction_target: 'btn-test-click',
-  session_id: `test-session-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`,
+  session_id: `test-session-${crypto.randomUUID()}`,
   user_id: 'test-user-123',
   device_id: 'test-device-456',
   user_agent: 'Mozilla/5.0 (Test)',
