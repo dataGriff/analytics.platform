@@ -222,10 +222,27 @@ analytics.platform/
 
 ## 📚 Documentation
 
+- **[CONTRACT.md](CONTRACT.md)** - **API Contract Specification** ⭐
+  - Complete API endpoint documentation
+  - Request/response formats and validation rules
+  - Channel-agnostic event schema specification
+  - Example requests for all channels
+  - Error codes and responses
+  - Testing and integration guidelines
+  
 - **[CHANNEL_AGNOSTIC_SCHEMA.md](CHANNEL_AGNOSTIC_SCHEMA.md)** - Complete schema documentation
   - Field mappings for each channel
   - Sample queries for cross-channel analytics
   - Best practices and implementation guidelines
+
+- **[CONTRACT_TESTING.md](CONTRACT_TESTING.md)** - Contract testing examples
+  - Valid and invalid event examples
+  - Test scripts (bash, JavaScript, Python)
+  - JSON Schema validation
+  
+- **[event-schema.json](event-schema.json)** - JSON Schema for validation
+  - Machine-readable schema definition
+  - Use with validation libraries
   
 - **[examples/](examples/)** - Implementation examples
   - Mobile app tracking (React Native, iOS, Android)
