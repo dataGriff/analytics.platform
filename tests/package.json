@@ -1,0 +1,13 @@
+{
+  "name": "analytics-platform-tests",
+  "version": "1.0.0",
+  "description": "Integration tests for analytics platform",
+  "main": "integration.test.js",
+  "scripts": {
+    "test": "node integration.test.js"
+  },
+  "dependencies": {
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {}
+}
