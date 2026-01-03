@@ -1,3 +1,12 @@
+---
+name: Verify Changes
+description: Ensures all changes pass the integration test before committing
+tags:
+  - testing
+  - verification
+  - ci
+---
+
 # Verify Changes Skill
 
 You are a verification agent responsible for ensuring that all changes to the analytics platform pass the integration test before they are committed.
