@@ -222,10 +222,37 @@ analytics.platform/
 
 ## 📚 Documentation
 
+- **[CONTRACT.md](CONTRACT.md)** - **API Contract Specification** ⭐
+  - Complete API endpoint documentation
+  - Request/response formats and validation rules
+  - Channel-agnostic event schema specification
+  - Example requests for all channels
+  - Error codes and responses
+  - Testing and integration guidelines
+  
 - **[CHANNEL_AGNOSTIC_SCHEMA.md](CHANNEL_AGNOSTIC_SCHEMA.md)** - Complete schema documentation
   - Field mappings for each channel
   - Sample queries for cross-channel analytics
   - Best practices and implementation guidelines
+
+- **[CONTRACT_TESTING.md](CONTRACT_TESTING.md)** - Contract testing examples
+  - Valid and invalid event examples
+  - Test scripts (bash, JavaScript, Python)
+  - JSON Schema validation
+  
+- **[event-schema.json](event-schema.json)** - JSON Schema for validation
+  - Machine-readable schema definition
+  - Use with validation libraries
+
+- **[validate-contract.js](validate-contract.js)** - Standalone validation tool
+  - Validate events without API server
+  - Built-in test suite (11 tests)
+  - Available as GitHub Copilot agent skill
+  - Usage: `node validate-contract.js --test`
+  
+- **[.github/agents/](.github/agents/)** - GitHub Copilot agent skills
+  - `validate-contract` skill for event validation
+  - Use with: `@agent use validate-contract`
   
 - **[examples/](examples/)** - Implementation examples
   - Mobile app tracking (React Native, iOS, Android)

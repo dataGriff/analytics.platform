@@ -1,0 +1,297 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://analytics.platform/schemas/event.json",
+  "title": "Analytics Event",
+  "description": "Channel-agnostic analytics event schema for the Analytics Platform",
+  "type": "object",
+  "required": ["channel", "event_type", "session_id"],
+  "properties": {
+    "channel": {
+      "type": "string",
+      "description": "Primary interaction channel",
+      "enum": ["web", "mobile", "agent", "chat", "speech"],
+      "maxLength": 50
+    },
+    "platform": {
+      "type": "string",
+      "description": "Specific platform variant (e.g., ios, android, web-desktop, alexa, slack)",
+      "maxLength": 100,
+      "examples": [
+        "web-desktop",
+        "web-mobile",
+        "web-tablet",
+        "ios",
+        "android",
+        "alexa",
+        "google-assistant",
+        "siri",
+        "slack",
+        "teams",
+        "whatsapp",
+        "copilot",
+        "langchain",
+        "autogen"
+      ]
+    },
+    "event_type": {
+      "type": "string",
+      "description": "Type of event",
+      "maxLength": 100,
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "examples": [
+        "navigation",
+        "interaction",
+        "session",
+        "error",
+        "message",
+        "intent",
+        "utterance",
+        "prompt",
+        "tool",
+        "generation"
+      ]
+    },
+    "event_category": {
+      "type": "string",
+      "description": "Broad category of event",
+      "maxLength": 100,
+      "enum": ["user_action", "system_event", "engagement", "error"],
+      "examples": ["user_action", "system_event", "engagement", "error"]
+    },
+    "resource_id": {
+      "type": "string",
+      "description": "Context identifier - URL for web, screen name for mobile, task ID for agents, conversation ID for chat",
+      "maxLength": 500,
+      "examples": [
+        "https://example.com/products",
+        "ProductDetailScreen",
+        "task-001",
+        "conversation-abc-123",
+        "skill-weather-001"
+      ]
+    },
+    "resource_title": {
+      "type": "string",
+      "description": "Human-readable context title",
+      "maxLength": 200,
+      "examples": [
+        "Products Page",
+        "Product Detail Screen",
+        "Implement Authentication",
+        "Support Conversation",
+        "Weather Skill"
+      ]
+    },
+    "interaction_target": {
+      "type": "string",
+      "description": "What was interacted with (button ID, element ID, command, tool name)",
+      "maxLength": 200,
+      "examples": [
+        "btn-add-to-cart",
+        "link-home",
+        "form-submit",
+        "tab-favorites",
+        "user_message",
+        "GetWeatherIntent",
+        "create_file"
+      ]
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Unique session identifier",
+      "maxLength": 100,
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "examples": ["session-1234567890-abc", "session-mobile-123"]
+    },
+    "user_id": {
+      "type": "string",
+      "description": "Authenticated user identifier (optional)",
+      "maxLength": 100,
+      "examples": ["user-456", "user-dev-789"]
+    },
+    "device_id": {
+      "type": "string",
+      "description": "Unique device identifier (optional)",
+      "maxLength": 100,
+      "examples": ["device-iphone-456", "device-echo-789"]
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "Browser or app user agent string",
+      "examples": [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "MyApp/1.0.0 (iOS 17.0; iPhone 14 Pro)",
+        "AIAgent/1.0.0 (copilot)"
+      ]
+    },
+    "client_version": {
+      "type": "string",
+      "description": "Application or SDK version",
+      "maxLength": 50,
+      "examples": ["1.0.0", "2.1.3", "1.5.0-beta"]
+    },
+    "interaction_value": {
+      "type": "number",
+      "description": "Numeric value such as duration, score, confidence level, or execution time",
+      "examples": [1.5, 0.92, 250, 1200]
+    },
+    "interaction_text": {
+      "type": "string",
+      "description": "Text content such as search query, message, voice command, or prompt",
+      "examples": [
+        "Search query text",
+        "How do I reset my password?",
+        "What is the weather in New York",
+        "Create a login page with email and password"
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "Event timestamp in ISO 8601 format (UTC)",
+      "format": "date-time",
+      "examples": ["2026-01-03T12:00:00.000Z", "2026-01-03T14:30:45.123Z"]
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional channel-specific data stored as JSON",
+      "additionalProperties": true,
+      "examples": [
+        {
+          "referrer": "https://example.com",
+          "screen_width": 1920,
+          "screen_height": 1080
+        },
+        {
+          "device_model": "iPhone 14 Pro",
+          "os_version": "17.0",
+          "app_state": "active"
+        },
+        {
+          "chat_platform": "slack",
+          "intent": "support.query",
+          "confidence_score": 0.95
+        },
+        {
+          "voice_platform": "alexa",
+          "skill_id": "skill-weather-001",
+          "slots": {
+            "city": "New York",
+            "date": "today"
+          }
+        },
+        {
+          "agent_platform": "copilot",
+          "task_type": "code_generation",
+          "tool_name": "create_file",
+          "language": "javascript"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "channel": "web",
+      "platform": "web-desktop",
+      "event_type": "interaction",
+      "event_category": "user_action",
+      "resource_id": "https://example.com/products",
+      "resource_title": "Products Page",
+      "interaction_target": "btn-add-to-cart",
+      "session_id": "session-1234567890-abc",
+      "user_id": "user-456",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      "timestamp": "2026-01-03T12:00:00.000Z",
+      "metadata": {
+        "product_id": "prod-789",
+        "price": 29.99
+      }
+    },
+    {
+      "channel": "mobile",
+      "platform": "ios",
+      "event_type": "navigation",
+      "event_category": "navigation",
+      "resource_id": "ProductDetailScreen",
+      "resource_title": "Product Detail",
+      "session_id": "session-mobile-123",
+      "user_id": "user-789",
+      "device_id": "device-iphone-456",
+      "user_agent": "MyApp/1.0.0 (iOS 17.0; iPhone 14 Pro)",
+      "client_version": "1.0.0",
+      "timestamp": "2026-01-03T12:01:00.000Z",
+      "metadata": {
+        "device_model": "iPhone 14 Pro",
+        "os_version": "17.0",
+        "previous_screen": "HomeScreen"
+      }
+    },
+    {
+      "channel": "chat",
+      "platform": "slack",
+      "event_type": "message",
+      "event_category": "engagement",
+      "resource_id": "conversation-abc-123",
+      "resource_title": "Support Conversation",
+      "interaction_target": "user_message",
+      "interaction_text": "How do I reset my password?",
+      "session_id": "session-chat-456",
+      "user_id": "user-slack-789",
+      "timestamp": "2026-01-03T12:02:00.000Z",
+      "metadata": {
+        "chat_platform": "slack",
+        "intent": "support.password_reset",
+        "confidence_score": 0.89,
+        "message_count": 3
+      }
+    },
+    {
+      "channel": "speech",
+      "platform": "alexa",
+      "event_type": "utterance",
+      "event_category": "user_action",
+      "resource_id": "skill-weather-001",
+      "resource_title": "Weather Skill",
+      "interaction_target": "GetWeatherIntent",
+      "interaction_text": "What is the weather in New York",
+      "interaction_value": 0.92,
+      "session_id": "session-alexa-789",
+      "user_id": "user-alexa-123",
+      "device_id": "device-echo-456",
+      "timestamp": "2026-01-03T12:03:00.000Z",
+      "metadata": {
+        "voice_platform": "alexa",
+        "skill_id": "skill-weather-001",
+        "intent_name": "GetWeatherIntent",
+        "slots": {
+          "city": "New York",
+          "date": "today"
+        },
+        "confidence_score": 0.92
+      }
+    },
+    {
+      "channel": "agent",
+      "platform": "copilot",
+      "event_type": "tool",
+      "event_category": "system_event",
+      "resource_id": "task-001",
+      "resource_title": "Implement authentication feature",
+      "interaction_target": "create_file",
+      "interaction_text": "Create src/pages/Login.jsx",
+      "interaction_value": 250,
+      "session_id": "session-agent-123",
+      "user_id": "user-dev-456",
+      "user_agent": "AIAgent/1.0.0 (copilot)",
+      "client_version": "1.0.0",
+      "timestamp": "2026-01-03T12:04:00.000Z",
+      "metadata": {
+        "agent_platform": "copilot",
+        "task_type": "code_generation",
+        "tool_name": "create_file",
+        "language": "javascript",
+        "execution_time": 250,
+        "file_path": "src/pages/Login.jsx"
+      }
+    }
+  ]
+}
