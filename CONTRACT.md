@@ -18,6 +18,16 @@ This contract serves three key purposes:
 2. **Testing & Validation**: Reference for automated contract testing and validation
 3. **AI Understanding**: Structured documentation for AI tools and assistants
 
+## Validation Tools
+
+This contract can be validated using:
+
+- **Standalone CLI**: `node validate-contract.js --test`
+- **GitHub Copilot Agent Skill**: `@agent use validate-contract to test`
+- **JSON Schema**: Use `event-schema.json` with standard validators
+
+See [.github/agents/README.md](.github/agents/README.md) for agent skill usage.
+
 ## Base URL
 
 ```

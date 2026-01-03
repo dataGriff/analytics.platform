@@ -243,6 +243,16 @@ analytics.platform/
 - **[event-schema.json](event-schema.json)** - JSON Schema for validation
   - Machine-readable schema definition
   - Use with validation libraries
+
+- **[validate-contract.js](validate-contract.js)** - Standalone validation tool
+  - Validate events without API server
+  - Built-in test suite (11 tests)
+  - Available as GitHub Copilot agent skill
+  - Usage: `node validate-contract.js --test`
+  
+- **[.github/agents/](.github/agents/)** - GitHub Copilot agent skills
+  - `validate-contract` skill for event validation
+  - Use with: `@agent use validate-contract`
   
 - **[examples/](examples/)** - Implementation examples
   - Mobile app tracking (React Native, iOS, Android)

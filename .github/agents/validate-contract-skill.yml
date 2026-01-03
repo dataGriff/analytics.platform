@@ -1,0 +1,71 @@
+name: validate-contract
+version: 1.0.0
+description: Validates analytics events against the Analytics Platform API contract
+
+# Tool configuration
+tool:
+  type: script
+  path: validate-contract.js
+  runtime: node
+  
+# Command definitions
+commands:
+  - name: validate
+    description: Validate an event payload from a JSON file
+    usage: validate <event-file.json>
+    parameters:
+      - name: event-file
+        type: file
+        required: true
+        description: Path to JSON file containing the event to validate
+    
+  - name: example
+    description: Show an example event for a specific channel
+    usage: example <channel>
+    parameters:
+      - name: channel
+        type: string
+        required: true
+        enum: [web, mobile, chat, speech, agent, minimal]
+        description: Channel type to show example for
+    
+  - name: test
+    description: Run all contract validation tests
+    usage: test
+    parameters: []
+
+# Skill capabilities
+capabilities:
+  - event-validation
+  - contract-testing
+  - schema-verification
+
+# Example usage
+examples:
+  - description: Validate a web event
+    command: validate my-web-event.json
+    
+  - description: Show example agent event
+    command: example agent
+    
+  - description: Run all validation tests
+    command: test
+
+# Integration with Analytics Platform
+metadata:
+  category: testing
+  tags:
+    - validation
+    - contract
+    - analytics
+    - testing
+  related_files:
+    - CONTRACT.md
+    - CONTRACT_TESTING.md
+    - event-schema.json
+  platforms:
+    - web
+    - mobile
+    - chat
+    - speech
+    - agent
