@@ -178,12 +178,14 @@ for i in {1..10}; do
   curl -s -X POST http://localhost:3001/analytics \
     -H "Content-Type: application/json" \
     -d "{
-      \"event_type\": \"button_click\",
-      \"page_url\": \"http://test.com/page\",
-      \"page_title\": \"Test Page\",
-      \"button_id\": \"test-button-$i\",
-      \"session_id\": \"test-session-$(date +%s)\",
-      \"user_agent\": \"test-script\"
+      \"channel\": \"web\",
+      \"platform\": \"web-desktop\",
+      \"event_type\": \"interaction\",
+      \"event_category\": \"user_action\",
+      \"resource_id\": \"http://test.com/page\",
+      \"resource_title\": \"Test Page\",
+      \"interaction_target\": \"test-button-$i\",
+      \"session_id\": \"test-session-$(date +%s)\"
     }" && echo " ✅ Event $i sent"
   sleep 0.5
 done
@@ -195,6 +197,16 @@ Run it:
 ```bash
 chmod +x test_events.sh
 ./test_events.sh
+```
+
+**Or use the built-in contract validator:**
+
+```bash
+# Validate an example event
+node validate-contract.js --example web
+
+# Run all contract tests
+node validate-contract.js --test
 ```
 
 ## Troubleshooting
@@ -248,16 +260,22 @@ docker exec -it postgres psql -U analytics -d analytics -c \
 
 ## What's Next?
 
-1. **Customize the website** - Edit files in `website/` directory
-2. **Add more dashboards** - Create new Grafana dashboards
-3. **Extend the API** - Add endpoints in `analytics-api/server.js`
-4. **Transform data** - Modify `bento/config.yaml`
-5. **Add more metrics** - Create database views and queries
+1. **Review the API Contract** - Read [CONTRACT.md](CONTRACT.md) to understand the full API specification
+2. **Implement Tracking** - Use examples from [examples/](examples/) for your channel
+3. **Validate Events** - Use `node validate-contract.js --test` to test your events
+4. **Customize the website** - Edit files in `website/` directory
+5. **Add more dashboards** - Create new Grafana dashboards
+6. **Extend the API** - Add endpoints in `analytics-api/server.js`
+7. **Transform data** - Modify `bento/config.yaml`
 
 ## Need Help?
 
+- 📄 **[CONTRACT.md](CONTRACT.md)** - Complete API contract specification
+- 📋 **[CONTRACT_TESTING.md](CONTRACT_TESTING.md)** - Testing examples and validation
+- 🔧 **[event-schema.json](event-schema.json)** - JSON Schema for validation
 - 📖 Read the full [README.md](README.md)
 - 🏗️ Check [ARCHITECTURE.md](ARCHITECTURE.md) for technical details
+- 📊 **[CHANNEL_AGNOSTIC_SCHEMA.md](CHANNEL_AGNOSTIC_SCHEMA.md)** - Schema details
 - 🐛 Open an issue in the repository
 - 💬 Check the logs: `docker compose logs -f`
 
@@ -269,5 +287,6 @@ docker exec -it postgres psql -U analytics -d analytics -c \
 - [ ] Grafana dashboard shows data at http://localhost:3000
 - [ ] Can see events in database
 - [ ] Can see events in Kafka topic
+- [ ] Contract validator tests pass (`node validate-contract.js --test`)
 
 If all boxes are checked: **🎉 Congratulations! Your analytics platform is ready!**
