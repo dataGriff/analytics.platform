@@ -301,6 +301,41 @@ SELECT * FROM analytics_events ORDER BY timestamp DESC LIMIT 10;
 SELECT event_type, COUNT(*) FROM analytics_events GROUP BY event_type;
 ```
 
+### Run Integration Tests
+```bash
+# Ensure services are running
+docker-compose up -d
+
+# Install test dependencies
+cd tests
+npm install
+
+# Run the integration test
+npm test
+```
+
+The integration test verifies the complete analytics pipeline by:
+1. Sending a test web event to the Analytics API
+2. Waiting for event processing through Kafka and Bento
+3. Querying PostgreSQL to verify the event was stored correctly
+
+See [tests/README.md](tests/README.md) for more details.
+
+## 🤖 Agent Skills
+
+This repository includes a GitHub Copilot agent skill for verifying changes:
+
+**Verify Changes Skill** (`.github/agents/verify-changes.md`)
+- Automatically runs the integration test before committing changes
+- Ensures all changes maintain the platform's core functionality
+- Provides clear pass/fail feedback
+
+To use the skill:
+1. Make your code changes
+2. Invoke the "Verify Changes" skill through GitHub Copilot
+3. The skill will run the integration test
+4. Only commit if the test passes
+
 ## 🔒 Security Notes
 
 **This is a demo setup. For production:**
