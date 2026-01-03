@@ -5,6 +5,7 @@
 const http = require('http');
 const https = require('https');
 const { Client } = require('pg');
+const crypto = require('crypto');
 
 // Configuration
 const ANALYTICS_API_URL = 'http://localhost:3001';
@@ -16,6 +17,9 @@ const POSTGRES_CONFIG = {
   database: 'analytics'
 };
 
+// Configurable wait time (can be overridden via environment variable)
+const PROCESSING_WAIT_TIME = parseInt(process.env.TEST_WAIT_TIME || '10000', 10);
+
 // Test event data (example web event)
 const TEST_EVENT = {
   channel: 'web',
@@ -25,7 +29,7 @@ const TEST_EVENT = {
   resource_id: 'http://localhost:8080/test-page',
   resource_title: 'Test Page',
   interaction_target: 'btn-test-click',
-  session_id: `test-session-${Date.now()}`,
+  session_id: `test-session-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`,
   user_id: 'test-user-123',
   device_id: 'test-device-456',
   user_agent: 'Mozilla/5.0 (Test)',
@@ -152,9 +156,9 @@ async function runIntegrationTest() {
     console.log(`✓ Session ID: ${TEST_EVENT.session_id}`);
     
     // Step 3: Wait for event processing
-    console.log('\n[3/5] Waiting for event processing (10 seconds)...');
+    console.log(`\n[3/5] Waiting for event processing (${PROCESSING_WAIT_TIME / 1000} seconds)...`);
     console.log('   Event flow: API → Kafka → Bento → PostgreSQL');
-    await sleep(10000);
+    await sleep(PROCESSING_WAIT_TIME);
     console.log('✓ Wait completed');
     
     // Step 4: Query database

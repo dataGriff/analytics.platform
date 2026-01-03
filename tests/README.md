@@ -40,7 +40,12 @@ npm install
 
 # Run the test
 npm test
+
+# Optional: Configure wait time (in milliseconds)
+TEST_WAIT_TIME=15000 npm test
 ```
+
+The test waits 10 seconds by default for event processing. If your system is slower, you can increase this using the `TEST_WAIT_TIME` environment variable.
 
 ### Expected Output
 
