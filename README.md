@@ -9,7 +9,10 @@ A complete, production-ready **multi-channel analytics platform** that captures,
 - **Real-time Event Streaming**: Capture user interactions and behavioral data
 - **Message Broker**: Apache Kafka for reliable, scalable event streaming
 - **Data Pipeline**: Bento for flexible data transformation and routing
-- **Time-Series Storage**: TimescaleDB (PostgreSQL) for efficient analytics data storage
+- **Dual Storage**: 
+  - **TimescaleDB (PostgreSQL)** for efficient time-series analytics and real-time dashboards
+  - **Delta Lake** for data lake storage with ACID transactions and time travel capabilities
+- **S3-Compatible Object Storage**: MinIO for Delta Lake file storage
 - **Real-time Dashboards**: Grafana for instant visualization and monitoring
 - **Demo Website**: Interactive two-page website demonstrating event tracking
 
@@ -29,20 +32,42 @@ Website (User Interactions)
 Analytics API (Node.js + Express)
     ↓ Kafka Producer
 Apache Kafka (Message Broker)
-    ↓ Consumer
-Bento (Stream Processor)
-    ↓ SQL Insert
-PostgreSQL/TimescaleDB (Data Store)
-    ↓ Query
-Grafana (Visualization)
+    ↓ Consumer (Parallel Processing)
+    ├─→ Bento (Stream Processor)
+    │       ↓ SQL Insert
+    │   PostgreSQL/TimescaleDB (Time-Series DB)
+    │       ↓ Query
+    │   Grafana (Visualization)
+    │
+    └─→ Delta Writer (Python Service)
+            ↓ Delta Lake Write
+        MinIO (S3-compatible Storage)
+            ↓ Store
+        Delta Lake Tables (Data Lake)
 ```
+
+### Storage Strategy
+
+The platform uses a **dual-storage architecture**:
+
+1. **PostgreSQL/TimescaleDB**: Hot storage for real-time analytics and dashboards
+   - Optimized for time-series queries
+   - Powers Grafana dashboards
+   - Fast access for recent data
+
+2. **Delta Lake on MinIO**: Data lake for long-term storage and advanced analytics
+   - ACID transactions without Spark
+   - Schema evolution support
+   - Time travel capabilities
+   - Parquet format for efficient storage
+   - S3-compatible object storage
 
 ## 📋 Prerequisites
 
 - Docker Desktop or Docker Engine (20.10+)
 - Docker Compose (v2.0+)
-- 4GB+ RAM available for Docker
-- Ports available: 3000, 3001, 5432, 8080, 9092
+- 6GB+ RAM available for Docker
+- Ports available: 3000, 3001, 5432, 8080, 9000, 9001, 9092
 
 ## 🎯 Quick Start
 
@@ -61,7 +86,9 @@ Grafana (Visualization)
    - Zookeeper (Kafka dependency)
    - Kafka (Message broker)
    - PostgreSQL with TimescaleDB (Database)
-   - Bento (Stream processor)
+   - MinIO (S3-compatible object storage)
+   - Bento (Stream processor for PostgreSQL)
+   - Delta Writer (Stream processor for Delta Lake)
    - Grafana (Dashboards)
    - Analytics API (Event receiver)
    - Demo Website (Event generator)
@@ -75,6 +102,7 @@ Grafana (Visualization)
 4. **Access the applications**
    - **Demo Website**: http://localhost:8080
    - **Grafana Dashboard**: http://localhost:3000 (admin/admin)
+   - **MinIO Console**: http://localhost:9001 (minioadmin/minioadmin)
    - **Analytics API Health**: http://localhost:3001/health
 
 ## 🎮 Using the Demo
@@ -87,6 +115,10 @@ Grafana (Visualization)
    - Password: `admin`
 5. View the "Analytics Platform Dashboard" to see real-time data
 6. Events update every 5 seconds automatically
+7. (Optional) Access MinIO Console at http://localhost:9001
+   - Username: `minioadmin`
+   - Password: `minioadmin`
+   - Browse to `analytics/delta/analytics-events` to see Delta Lake files
 
 ## 📊 What's Being Tracked
 
@@ -138,6 +170,21 @@ See [CHANNEL_AGNOSTIC_SCHEMA.md](CHANNEL_AGNOSTIC_SCHEMA.md) for complete docume
 - Transforms and enriches data
 - Writes to PostgreSQL in real-time
 - Configurable via `bento/config.yaml`
+
+### Delta Writer (Python Service)
+- Consumes events from Kafka in parallel with Bento
+- Writes to Delta Lake format without Spark
+- Uses deltalake (delta-rs) Python library
+- Stores data in MinIO (S3-compatible storage)
+- Configurable batch size and timeout
+- See [delta-writer/README.md](delta-writer/README.md) for details
+
+### MinIO (Ports 9000, 9001)
+- S3-compatible object storage
+- Stores Delta Lake tables
+- Web console at port 9001
+- Credentials: `minioadmin/minioadmin`
+- Bucket: `analytics`
 
 ### PostgreSQL/TimescaleDB (Port 5432)
 - Time-series optimized database
@@ -226,11 +273,23 @@ analytics.platform/
   - Field mappings for each channel
   - Sample queries for cross-channel analytics
   - Best practices and implementation guidelines
+
+- **[DELTA_LAKE_INTEGRATION.md](DELTA_LAKE_INTEGRATION.md)** - Delta Lake integration guide
+  - Architecture and design decisions
+  - Spark-free implementation details
+  - Usage examples and queries
+  - Performance and security considerations
+  
+- **[delta-writer/README.md](delta-writer/README.md)** - Delta writer service documentation
+  - Configuration options
+  - Batch processing details
+  - Monitoring and troubleshooting
   
 - **[examples/](examples/)** - Implementation examples
   - Mobile app tracking (React Native, iOS, Android)
   - Chat/messaging platform tracking
   - Voice/speech assistant tracking
+  - AI agent tracking
   - AI agent tracking
 
 ## 🔌 Implementing New Channels
@@ -305,7 +364,8 @@ SELECT event_type, COUNT(*) FROM analytics_events GROUP BY event_type;
 
 **This is a demo setup. For production:**
 
-- Change default passwords
+### General Security
+- Change default passwords (PostgreSQL: analytics/analytics123, MinIO: minioadmin/minioadmin, Grafana: admin/admin)
 - Enable SSL/TLS for all services
 - Add authentication to Analytics API
 - Implement rate limiting
@@ -314,13 +374,22 @@ SELECT event_type, COUNT(*) FROM analytics_events GROUP BY event_type;
 - Restrict network access
 - Add monitoring and alerting
 
+### MinIO Security
+- Configure proper IAM policies instead of anonymous access
+- Use strong credentials (not minioadmin/minioadmin)
+- Enable TLS/SSL encryption
+- Restrict bucket access to authorized services only
+- Enable audit logging
+- Configure bucket policies and access control lists
+
 ## 🚢 Production Considerations
 
 1. **Scaling**:
    - Add more Kafka brokers
-   - Scale Bento horizontally
+   - Scale Bento and Delta Writer horizontally
    - Use PostgreSQL replication
    - Add load balancer for Analytics API
+   - Scale MinIO with distributed mode
 
 2. **Monitoring**:
    - Add Prometheus for metrics

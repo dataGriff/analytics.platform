@@ -4,9 +4,20 @@ npm-debug.log
 yarn-error.log
 package-lock.json
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
 # Docker volumes
 postgres-data/
 grafana-data/
+minio-data/
 
 # OS files
 .DS_Store
