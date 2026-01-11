@@ -39,11 +39,12 @@ class DockerManager:
                 cmd,
                 cwd=self.compose_dir,
                 capture_output=True,
-                text=True
+                text=True,
+                check=True
             )
             return result
         else:
-            subprocess.run(cmd, cwd=self.compose_dir)
+            subprocess.run(cmd, cwd=self.compose_dir, check=True)
     
     def up(self, detached=True, services=None):
         """Start services.

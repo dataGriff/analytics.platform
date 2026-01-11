@@ -18,7 +18,8 @@ setup(
     description='CLI tool for managing the Analytics Platform',
     long_description=read_file('README.md'),
     long_description_content_type='text/markdown',
-    author='Analytics Platform',
+    author='Analytics Platform Contributors',
+    author_email='',
     python_requires='>=3.8',
     packages=find_packages(),
     install_requires=[
