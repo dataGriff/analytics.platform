@@ -13,6 +13,10 @@ __pycache__/
 venv/
 env/
 ENV/
+build/
+dist/
+*.egg-info/
+.eggs/
 
 # Docker volumes
 postgres-data/
