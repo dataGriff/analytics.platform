@@ -64,12 +64,51 @@ The platform uses a **dual-storage architecture**:
 
 ## 📋 Prerequisites
 
+- Python 3.8+ (for CLI installation)
 - Docker Desktop or Docker Engine (20.10+)
 - Docker Compose (v2.0+)
 - 6GB+ RAM available for Docker
 - Ports available: 3000, 3001, 5432, 8080, 9000, 9001, 9092
 
 ## 🎯 Quick Start
+
+### Option 1: Using the CLI (Recommended)
+
+1. **Clone and install the CLI**
+   ```bash
+   git clone <repository-url>
+   cd analytics.platform
+   pip install -e .
+   ```
+
+2. **Start the platform**
+   ```bash
+   analytics-platform up
+   ```
+
+   The CLI will:
+   - Start all Docker containers
+   - Wait for services to be ready
+   - Display access URLs when ready
+
+3. **Check status**
+   ```bash
+   analytics-platform status
+   ```
+
+4. **View logs**
+   ```bash
+   analytics-platform logs -f
+   ```
+
+5. **Stop the platform**
+   ```bash
+   analytics-platform down
+   ```
+
+For detailed CLI installation and usage, see [CLI_INSTALL.md](CLI_INSTALL.md).
+
+### Option 2: Using Docker Compose Directly
 
 1. **Clone the repository**
    ```bash
