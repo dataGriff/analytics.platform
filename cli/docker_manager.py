@@ -31,6 +31,9 @@ class DockerManager:
             
         Returns:
             subprocess.CompletedProcess if capture_output is True, otherwise None
+            
+        Raises:
+            subprocess.CalledProcessError: If the command fails (non-zero exit code)
         """
         cmd = ['docker', 'compose', '-f', str(self.compose_file)] + args
         
