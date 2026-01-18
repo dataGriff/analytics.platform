@@ -13,7 +13,9 @@ A complete, production-ready **multi-channel analytics platform** that captures,
   - **TimescaleDB (PostgreSQL)** for efficient time-series analytics and real-time dashboards
   - **Delta Lake** for data lake storage with ACID transactions and time travel capabilities
 - **S3-Compatible Object Storage**: MinIO for Delta Lake file storage
-- **Real-time Dashboards**: Grafana for instant visualization and monitoring
+- **Real-time Dashboards**: 
+  - **Grafana** for PostgreSQL-based real-time monitoring
+  - **Streamlit Delta Dashboard** for Delta Lake analytics and exploration
 - **Demo Website**: Interactive two-page website demonstrating event tracking
 
 ## 🌐 Supported Channels
@@ -42,8 +44,10 @@ Apache Kafka (Message Broker)
     └─→ Delta Writer (Python Service)
             ↓ Delta Lake Write
         MinIO (S3-compatible Storage)
-            ↓ Store
+            ↓ Store/Query
         Delta Lake Tables (Data Lake)
+            ↓ Read
+        Delta Dashboard (Streamlit)
 ```
 
 ### Storage Strategy
@@ -101,6 +105,7 @@ The platform uses a **dual-storage architecture**:
 
 4. **Access the applications**
    - **Demo Website**: http://localhost:8080
+   - **Delta Lake Dashboard**: http://localhost:8501 (Streamlit)
    - **Grafana Dashboard**: http://localhost:3000 (admin/admin)
    - **MinIO Console**: http://localhost:9001 (minioadmin/minioadmin)
    - **Analytics API Health**: http://localhost:3001/health
@@ -198,6 +203,20 @@ See [CHANNEL_AGNOSTIC_SCHEMA.md](CHANNEL_AGNOSTIC_SCHEMA.md) for complete docume
 - Pre-configured with PostgreSQL datasource
 - Auto-refreshing panels
 - Credentials: `admin/admin`
+
+### Delta Lake Dashboard (Port 8501)
+- Interactive Streamlit-based dashboard
+- Reads directly from Delta Lake tables
+- Features:
+  - Real-time event visualization with auto-refresh
+  - Interactive filters (date range, channel, event type)
+  - Time-series charts showing event volume
+  - Channel and event type distribution
+  - Platform and category breakdowns
+  - Heatmaps for channel × event type analysis
+  - Recent events table
+  - CSV export capability
+- See [delta-dashboard/README.md](delta-dashboard/README.md) for details
 
 ### Demo Website (Port 8080)
 - Two-page demonstration site

@@ -141,8 +141,8 @@ def write_batch_to_delta(events):
         if 'interaction_value' in df.columns:
             df['interaction_value'] = pd.to_numeric(df['interaction_value'], errors='coerce')
         
-        # Convert timestamp to datetime
-        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        # Convert timestamp to datetime - use format='ISO8601' to handle various ISO8601 formats
+        df['timestamp'] = pd.to_datetime(df['timestamp'], format='ISO8601', utc=True)
         
         # Write to Delta Lake
         write_deltalake(
