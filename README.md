@@ -13,14 +13,26 @@ A complete, production-ready **multi-channel analytics platform** that captures,
 
 ### Option 1: Using the CLI (Recommended)
 
-1. **Clone and install the CLI**
-   ```bash
-   git clone https://github.com/dataGriff/analytics.platform.git
-   cd analytics.platform
-   pip install -e .
-   ```
+#### Install the CLI
 
-2. **Start the platform**
+**Quick install from GitHub:**
+```bash
+pip install git+https://github.com/dataGriff/analytics.platform.git
+
+# Add to PATH if needed (Linux/Mac)
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+**Or clone and install for development:**
+```bash
+git clone https://github.com/dataGriff/analytics.platform.git
+cd analytics.platform
+pip install -e .
+```
+
+#### Use the CLI
+
+1. **Start the platform**
    ```bash
    analytics-platform up
    ```
@@ -30,17 +42,17 @@ A complete, production-ready **multi-channel analytics platform** that captures,
    - Wait for services to be ready
    - Display access URLs when ready
 
-3. **Check status**
+2. **Check status**
    ```bash
    analytics-platform status
    ```
 
-4. **View logs**
+3. **View logs**
    ```bash
    analytics-platform logs -f
    ```
 
-5. **Stop the platform**
+4. **Stop the platform**
    ```bash
    analytics-platform down
    ```

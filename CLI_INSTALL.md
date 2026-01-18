@@ -11,11 +11,37 @@ This guide will help you install the Analytics Platform CLI on your machine.
 
 ## Installation Methods
 
-### Method 1: Install from Source (Recommended for Development)
+### Method 1: Install Directly from GitHub (Recommended)
+
+Install the latest version directly from the GitHub repository:
+
+```bash
+pip install git+https://github.com/dataGriff/analytics.platform.git
+```
+
+After installation, you may need to add pip's bin directory to your PATH:
+
+```bash
+# For Linux/Mac - add to ~/.bashrc or ~/.zshrc
+export PATH="$HOME/.local/bin:$PATH"
+
+# Apply immediately
+source ~/.bashrc  # or source ~/.zshrc
+```
+
+Verify installation:
+```bash
+analytics-platform --version
+analytics-platform --help
+```
+
+### Method 2: Install from Source (For Development)
+
+If you want to contribute or modify the CLI:
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/dataGriff/analytics.platform.git
    cd analytics.platform
    ```
 
@@ -26,26 +52,23 @@ This guide will help you install the Analytics Platform CLI on your machine.
 
    This installs the CLI in "editable" mode, which means changes to the source code will be reflected immediately without reinstalling.
 
-3. **Verify installation**
+3. **Add to PATH if needed**
+   ```bash
+   export PATH="$HOME/.local/bin:$PATH"
+   ```
+
+4. **Verify installation**
    ```bash
    analytics-platform --version
    analytics-platform --help
    ```
 
-### Method 2: Install from PyPI (When Available)
+### Method 3: Install from PyPI (When Available)
 
 Once published to PyPI:
 
 ```bash
 pip install analytics-platform-cli
-```
-
-### Method 3: Install from GitHub
-
-Install directly from GitHub without cloning:
-
-```bash
-pip install git+https://github.com/<username>/analytics.platform.git
 ```
 
 ## Quick Start
