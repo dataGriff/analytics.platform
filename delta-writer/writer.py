@@ -73,7 +73,13 @@ def wait_for_kafka():
     return False
 
 def parse_event(message):
-    """Parse and normalize event data."""
+    """Parse and normalize event data.
+    
+    This function handles events from JavaScript/web clients where optional fields
+    may be sent as null. Delta Lake requires all columns to have a defined type,
+    so we convert None values to empty strings for string fields to avoid the
+    "Invalid data type for Delta Lake: Null" error.
+    """
     try:
         event = json.loads(message.value.decode('utf-8'))
         
