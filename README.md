@@ -6,15 +6,64 @@ A complete, production-ready **multi-channel analytics platform** that captures,
 
 ### Prerequisites
 
+- Python 3.8+ (for CLI installation)
 - Docker Desktop or Docker Engine (20.10+)
 - Docker Compose (v2.0+)
 - 6GB+ RAM available for Docker
 
-### Start the Platform
+### Option 1: Using the CLI (Recommended)
+
+#### Install the CLI
+
+**Quick install from GitHub:**
+```bash
+pip install git+https://github.com/dataGriff/analytics.platform.git
+
+# Add to PATH if needed (Linux/Mac)
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+**Or clone and install for development:**
+```bash
+git clone https://github.com/dataGriff/analytics.platform.git
+cd analytics.platform
+pip install -e .
+```
+
+#### Use the CLI
+
+1. **Start the platform**
+   ```bash
+   analytics-platform up
+   ```
+
+   The CLI will:
+   - Start all Docker containers
+   - Wait for services to be ready
+   - Display access URLs when ready
+
+2. **Check status**
+   ```bash
+   analytics-platform status
+   ```
+
+3. **View logs**
+   ```bash
+   analytics-platform logs -f
+   ```
+
+4. **Stop the platform**
+   ```bash
+   analytics-platform down
+   ```
+
+For detailed CLI installation and usage, see [CLI_INSTALL.md](CLI_INSTALL.md).
+
+### Option 2: Using Docker Compose Directly
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/dataGriff/analytics.platform.git
 cd analytics.platform
 
 # Start all services
@@ -107,6 +156,7 @@ Comprehensive documentation is available in the [docs/](docs/) directory:
 ### Getting Started
 - **[Getting Started Guide](docs/getting-started.md)** - Complete setup and quickstart guide
 - **[Integration Guide](docs/integration.md)** - How to integrate with your applications
+- **[CLI Installation Guide](CLI_INSTALL.md)** - CLI installation and usage
 
 ### Architecture & Design
 - **[Architecture](docs/architecture.md)** - System architecture and component overview
@@ -131,6 +181,9 @@ docker compose logs -f
 
 # Specific service
 docker compose logs -f analytics-api
+
+# Or use the CLI
+analytics-platform logs -f analytics-api
 ```
 
 ### Restart Services
@@ -140,14 +193,22 @@ docker compose restart
 
 # Specific service
 docker compose restart analytics-api
+
+# Or use the CLI
+analytics-platform restart -s analytics-api
 ```
 
 ### Stop the Platform
 ```bash
+# Using docker compose
 docker compose down
 
 # Remove all data for fresh start
 docker compose down -v
+
+# Or use the CLI
+analytics-platform down
+analytics-platform down --volumes  # Remove data
 ```
 
 ### Access Database
@@ -256,7 +317,7 @@ See [Production Deployment](docs/production.md) for detailed recommendations.
 ### Services won't start
 - Check if ports are already in use
 - Ensure Docker has enough resources (6GB+ RAM)
-- Check logs: `docker compose logs`
+- Check logs: `docker compose logs` or `analytics-platform logs`
 
 ### Events not appearing in Grafana
 - Wait 1-2 minutes for data to flow through pipeline
