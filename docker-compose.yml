@@ -185,6 +185,29 @@ services:
       - analytics-network
     restart: unless-stopped
 
+  # Delta Lake analytics dashboard
+  delta-dashboard:
+    build:
+      context: ./delta-dashboard
+      dockerfile: Dockerfile
+    hostname: delta-dashboard
+    container_name: delta-dashboard
+    depends_on:
+      - minio
+      - minio-init
+    ports:
+      - "8501:8501"
+    environment:
+      DELTA_TABLE_PATH: s3://analytics/delta/analytics-events
+      AWS_ENDPOINT_URL: http://minio:9000
+      AWS_ACCESS_KEY_ID: minioadmin
+      AWS_SECRET_ACCESS_KEY: minioadmin
+      AWS_REGION: us-east-1
+      AWS_ALLOW_HTTP: "true"
+    networks:
+      - analytics-network
+    restart: unless-stopped
+
 networks:
   analytics-network:
     driver: bridge

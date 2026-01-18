@@ -20,7 +20,7 @@ KAFKA_BOOTSTRAP_SERVERS = os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'kafka:29092')
 KAFKA_TOPIC = os.getenv('KAFKA_TOPIC', 'analytics-events')
 KAFKA_GROUP_ID = os.getenv('KAFKA_GROUP_ID', 'delta-writer-consumer')
 DELTA_TABLE_PATH = os.getenv('DELTA_TABLE_PATH', 's3://analytics/delta/analytics-events')
-BATCH_SIZE = int(os.getenv('BATCH_SIZE', '100'))
+BATCH_SIZE = int(os.getenv('BATCH_SIZE', '5'))
 BATCH_TIMEOUT_SECONDS = int(os.getenv('BATCH_TIMEOUT_SECONDS', '10'))
 
 # S3/MinIO Configuration
@@ -39,6 +39,14 @@ storage_options = {
     'AWS_ALLOW_HTTP': AWS_ALLOW_HTTP,
     'AWS_S3_ALLOW_UNSAFE_RENAME': 'true'
 }
+
+# String fields that should never be None (to avoid Delta Lake schema errors)
+STRING_FIELDS = [
+    'channel', 'platform', 'event_type', 'event_category',
+    'resource_id', 'resource_title', 'interaction_target',
+    'session_id', 'user_id', 'device_id', 'user_agent',
+    'client_version', 'interaction_text'
+]
 
 def wait_for_kafka():
     """Wait for Kafka to be available."""
@@ -65,7 +73,13 @@ def wait_for_kafka():
     return False
 
 def parse_event(message):
-    """Parse and normalize event data."""
+    """Parse and normalize event data.
+    
+    This function handles events from JavaScript/web clients where optional fields
+    may be sent as null. Delta Lake requires all columns to have a defined type,
+    so we convert None values to empty strings for string fields to avoid the
+    "Invalid data type for Delta Lake: Null" error.
+    """
     try:
         event = json.loads(message.value.decode('utf-8'))
         
@@ -96,6 +110,11 @@ def parse_event(message):
         event.setdefault('interaction_value', None)
         event.setdefault('interaction_text', '')
         
+        # Convert None to empty string for string fields to avoid Delta Lake schema errors
+        for field in STRING_FIELDS:
+            if event.get(field) is None:
+                event[field] = ''
+        
         # Convert metadata to JSON string if it exists
         if 'metadata' in event and isinstance(event['metadata'], (dict, list)):
             event['metadata'] = json.dumps(event['metadata'])
@@ -122,8 +141,8 @@ def write_batch_to_delta(events):
         if 'interaction_value' in df.columns:
             df['interaction_value'] = pd.to_numeric(df['interaction_value'], errors='coerce')
         
-        # Convert timestamp to datetime
-        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        # Convert timestamp to datetime - use format='ISO8601' to handle various ISO8601 formats
+        df['timestamp'] = pd.to_datetime(df['timestamp'], format='ISO8601', utc=True)
         
         # Write to Delta Lake
         write_deltalake(

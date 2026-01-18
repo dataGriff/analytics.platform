@@ -5,6 +5,15 @@ Simple test to validate delta-writer functionality
 import json
 from datetime import datetime
 
+# String fields that should never be None (to avoid Delta Lake schema errors)
+# This list should match STRING_FIELDS in writer.py
+STRING_FIELDS = [
+    'channel', 'platform', 'event_type', 'event_category',
+    'resource_id', 'resource_title', 'interaction_target',
+    'session_id', 'user_id', 'device_id', 'user_agent',
+    'client_version', 'interaction_text'
+]
+
 # Test event parsing
 def test_event_parsing():
     """Test event parsing and normalization"""
@@ -50,6 +59,11 @@ def test_event_parsing():
     event.setdefault('client_version', '')
     event.setdefault('interaction_value', None)
     event.setdefault('interaction_text', '')
+    
+    # Convert None to empty string for string fields to avoid Delta Lake schema errors
+    for field in STRING_FIELDS:
+        if event.get(field) is None:
+            event[field] = ''
     
     # Convert metadata to JSON string
     if 'metadata' in event and isinstance(event['metadata'], (dict, list)):
@@ -100,6 +114,79 @@ def test_data_types():
     print(f"   DataFrame dtypes:\n{df.dtypes}")
     return True
 
+# Test with null values (as sent from JavaScript)
+def test_null_value_handling():
+    """Test that null values are properly converted to avoid Delta Lake errors"""
+    # Simulate event from JavaScript with null values
+    sample_event = {
+        'timestamp': '2024-12-31T10:00:00Z',
+        'channel': 'web',
+        'platform': 'web-desktop',
+        'event_type': 'navigation',
+        'event_category': 'navigation',
+        'resource_id': 'http://localhost:8080/',
+        'resource_title': 'Home Page',
+        'interaction_target': None,  # null from JavaScript
+        'session_id': 'session-123',
+        'user_id': None,  # null from JavaScript (not authenticated)
+        'device_id': 'device-456',
+        'metadata': {'page': 'home'}
+    }
+    
+    # Simulate parse_event processing
+    event = sample_event.copy()
+    
+    # Ensure all required fields have defaults
+    event.setdefault('channel', 'unknown')
+    event.setdefault('platform', '')
+    event.setdefault('event_type', 'unknown')
+    event.setdefault('event_category', '')
+    event.setdefault('resource_id', '')
+    event.setdefault('resource_title', '')
+    event.setdefault('interaction_target', '')
+    event.setdefault('session_id', '')
+    event.setdefault('user_id', '')
+    event.setdefault('device_id', '')
+    event.setdefault('user_agent', '')
+    event.setdefault('client_version', '')
+    event.setdefault('interaction_value', None)
+    event.setdefault('interaction_text', '')
+    
+    # Convert None to empty string for string fields
+    for field in STRING_FIELDS:
+        if event.get(field) is None:
+            event[field] = ''
+    
+    # Convert metadata to JSON string
+    if 'metadata' in event and isinstance(event['metadata'], (dict, list)):
+        event['metadata'] = json.dumps(event['metadata'])
+    else:
+        event['metadata'] = '{}'
+    
+    # Verify all string fields are now empty strings, not None
+    for field in STRING_FIELDS:
+        if event.get(field) is None:
+            raise AssertionError(f"Field {field} is still None after processing")
+    
+    # Create DataFrame and test Delta Lake compatibility
+    import pandas as pd
+    df = pd.DataFrame([event])
+    
+    # Convert types
+    if 'interaction_value' in df.columns:
+        df['interaction_value'] = pd.to_numeric(df['interaction_value'], errors='coerce')
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    
+    # Check for object columns with all None/NaN values (would cause Delta Lake error)
+    for col in df.columns:
+        if df[col].dtype == 'object':
+            if df[col].isna().all():
+                raise AssertionError(f"Column {col} has all None values, would cause Delta Lake error")
+    
+    print("✅ Null value handling test passed")
+    print(f"   All string fields properly converted from None to empty string")
+    return True
+
 if __name__ == '__main__':
     print("Running delta-writer unit tests...\n")
     
@@ -107,6 +194,8 @@ if __name__ == '__main__':
         test_event_parsing()
         print()
         test_data_types()
+        print()
+        test_null_value_handling()
         print("\n✅ All tests passed!")
     except Exception as e:
         print(f"\n❌ Test failed: {e}")
