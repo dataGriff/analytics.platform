@@ -198,4 +198,4 @@ mobile-app/
 
 - [Expo Documentation](https://docs.expo.dev/)
 - [React Native Documentation](https://reactnative.dev/)
-- [Analytics Platform Schema](../docs/schema.md)
+- [Analytics Platform Schema](../schema.md)
