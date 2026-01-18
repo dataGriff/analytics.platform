@@ -20,7 +20,7 @@ KAFKA_BOOTSTRAP_SERVERS = os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'kafka:29092')
 KAFKA_TOPIC = os.getenv('KAFKA_TOPIC', 'analytics-events')
 KAFKA_GROUP_ID = os.getenv('KAFKA_GROUP_ID', 'delta-writer-consumer')
 DELTA_TABLE_PATH = os.getenv('DELTA_TABLE_PATH', 's3://analytics/delta/analytics-events')
-BATCH_SIZE = int(os.getenv('BATCH_SIZE', '100'))
+BATCH_SIZE = int(os.getenv('BATCH_SIZE', '5'))
 BATCH_TIMEOUT_SECONDS = int(os.getenv('BATCH_TIMEOUT_SECONDS', '10'))
 
 # S3/MinIO Configuration
