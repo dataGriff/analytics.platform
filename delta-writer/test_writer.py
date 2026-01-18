@@ -5,6 +5,15 @@ Simple test to validate delta-writer functionality
 import json
 from datetime import datetime
 
+# String fields that should never be None (to avoid Delta Lake schema errors)
+# This list should match STRING_FIELDS in writer.py
+STRING_FIELDS = [
+    'channel', 'platform', 'event_type', 'event_category',
+    'resource_id', 'resource_title', 'interaction_target',
+    'session_id', 'user_id', 'device_id', 'user_agent',
+    'client_version', 'interaction_text'
+]
+
 # Test event parsing
 def test_event_parsing():
     """Test event parsing and normalization"""
@@ -52,13 +61,7 @@ def test_event_parsing():
     event.setdefault('interaction_text', '')
     
     # Convert None to empty string for string fields to avoid Delta Lake schema errors
-    string_fields = [
-        'channel', 'platform', 'event_type', 'event_category',
-        'resource_id', 'resource_title', 'interaction_target',
-        'session_id', 'user_id', 'device_id', 'user_agent',
-        'client_version', 'interaction_text'
-    ]
-    for field in string_fields:
+    for field in STRING_FIELDS:
         if event.get(field) is None:
             event[field] = ''
     
@@ -150,13 +153,7 @@ def test_null_value_handling():
     event.setdefault('interaction_text', '')
     
     # Convert None to empty string for string fields
-    string_fields = [
-        'channel', 'platform', 'event_type', 'event_category',
-        'resource_id', 'resource_title', 'interaction_target',
-        'session_id', 'user_id', 'device_id', 'user_agent',
-        'client_version', 'interaction_text'
-    ]
-    for field in string_fields:
+    for field in STRING_FIELDS:
         if event.get(field) is None:
             event[field] = ''
     
@@ -167,7 +164,7 @@ def test_null_value_handling():
         event['metadata'] = '{}'
     
     # Verify all string fields are now empty strings, not None
-    for field in string_fields:
+    for field in STRING_FIELDS:
         if event.get(field) is None:
             raise AssertionError(f"Field {field} is still None after processing")
     

@@ -40,6 +40,14 @@ storage_options = {
     'AWS_S3_ALLOW_UNSAFE_RENAME': 'true'
 }
 
+# String fields that should never be None (to avoid Delta Lake schema errors)
+STRING_FIELDS = [
+    'channel', 'platform', 'event_type', 'event_category',
+    'resource_id', 'resource_title', 'interaction_target',
+    'session_id', 'user_id', 'device_id', 'user_agent',
+    'client_version', 'interaction_text'
+]
+
 def wait_for_kafka():
     """Wait for Kafka to be available."""
     max_retries = 30
@@ -97,13 +105,7 @@ def parse_event(message):
         event.setdefault('interaction_text', '')
         
         # Convert None to empty string for string fields to avoid Delta Lake schema errors
-        string_fields = [
-            'channel', 'platform', 'event_type', 'event_category',
-            'resource_id', 'resource_title', 'interaction_target',
-            'session_id', 'user_id', 'device_id', 'user_agent',
-            'client_version', 'interaction_text'
-        ]
-        for field in string_fields:
+        for field in STRING_FIELDS:
             if event.get(field) is None:
                 event[field] = ''
         
