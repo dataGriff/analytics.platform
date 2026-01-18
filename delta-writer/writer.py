@@ -96,6 +96,17 @@ def parse_event(message):
         event.setdefault('interaction_value', None)
         event.setdefault('interaction_text', '')
         
+        # Convert None to empty string for string fields to avoid Delta Lake schema errors
+        string_fields = [
+            'channel', 'platform', 'event_type', 'event_category',
+            'resource_id', 'resource_title', 'interaction_target',
+            'session_id', 'user_id', 'device_id', 'user_agent',
+            'client_version', 'interaction_text'
+        ]
+        for field in string_fields:
+            if event.get(field) is None:
+                event[field] = ''
+        
         # Convert metadata to JSON string if it exists
         if 'metadata' in event and isinstance(event['metadata'], (dict, list)):
             event['metadata'] = json.dumps(event['metadata'])
